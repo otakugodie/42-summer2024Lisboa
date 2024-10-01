@@ -256,4 +256,37 @@ void	assign_clues(int clue_values[16], int clues[4][SIZE]) {
 
 	i = 0;
 	while (i < SIZE) {
-		clues[0][i
+		clues[0][i] = clue_values[i];               // Desde arriba
+		clues[1][i] = clue_values[i + SIZE];        // Desde abajo
+		clues[2][i] = clue_values[i + 2 * SIZE];    // Desde la izquierda
+		clues[3][i] = clue_values[i + 3 * SIZE];    // Desde la derecha
+		i++;
+	}
+}
+
+// Parsear (procesar) las pistas dadas como argumento
+void	parse_clues(char *arg, int clues[4][SIZE]) {
+	int	clue_values[16];
+
+	extract_clue_values(arg, clue_values);
+	assign_clues(clue_values, clues);
+}
+
+// Función principal
+int	main(int argc, char **argv) {
+	int	clues[4][SIZE];  // Almacenará las pistas
+	int	grid[SIZE][SIZE] = {0};  // La cuadrícula comienza vacía (todo 0)
+	
+	if (argc == 2) {  // Verificamos que solo haya un argumento
+		parse_clues(argv[1], clues);  // Procesamos las pistas
+		if (solve_skyscrapers(grid, 0, 0, clues)) {
+			print_grid(grid);  // Si hay solución, imprimimos la cuadrícula
+		} else {
+			write(1, "Error\n", 6);  // Si no hay solución, mostramos error
+		}
+	} else {
+		print_error_and_exit();  // Si el número de argumentos es incorrecto
+	}
+	
+	return (0);
+}
