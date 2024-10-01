@@ -1,6 +1,6 @@
-#include <stdio.h>
+#include <unistd.h>
 
-/* Función encargdaa de saltar espacios en blanco y signos (+ o -) al inicio de la cadena.
+/* Función encargda de saltar espacios en blanco y signos (+ o -) al inicio de la cadena.
 Devuelve el signo (-1 si hay un signo negativo, 1 si es positivo) y actualiza el índice (index) para apuntar al primer carácter numérico.
 */
 int	skip_paces_signs(char *str, int *index)
@@ -39,9 +39,32 @@ int	ft_atoi(char *str)
 	}
 	return (result * sign);
 }
-
-int	main(void)
+void	ft_putnbr(int nb)
 {
+	char	c;
+
+	if (nb == -2147483648)
+	{
+		write(1, "-2147483648", 11);
+		return ;
+	}
+	if (nb < 0)
+	{
+		write(1, "-", 1);
+		nb = -nb;
+	}
+	if (nb >= 10)
+	{
+		ft_putnbr(nb / 10);
+	}
+	c = (nb % 10) + '0';
+	write(1, &c, 1);
+}
+
+int	main(int argc, char *argv[])
+{
+	
+	/*
 	char *string = "   ---+--+01234506789ab567";
 	char *string1 = "1234";
 	char *string2 = "-567";
@@ -55,6 +78,13 @@ int	main(void)
 	printf("%d\n", ft_atoi(string3));
 	printf("%d\n", ft_atoi(string4));
 	printf("%d\n", ft_atoi(string5));
+	*/
+	if (argc == 2)
+	{
+		int number = ft_atoi(argv[1]);
+		ft_putnbr(number);
+		write(1, "\n", 1);
+	}
 
 	return (0);
 }
