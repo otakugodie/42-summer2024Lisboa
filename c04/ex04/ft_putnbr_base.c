@@ -77,7 +77,7 @@ int	main(void)
 
 	ft_putnbr_base(-12, "01");
 	printf("\n");
-	ft_putnbr_base(40, "poneyvif");
+	ft_putnbr_base(40, "poniguay");
 	printf("\n");
 	ft_putnbr_base(894867, "0123456789");
 	printf("\n");

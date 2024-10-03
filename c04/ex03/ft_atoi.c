@@ -64,7 +64,6 @@ void	ft_putnbr(int nb)
 int	main(int argc, char *argv[])
 {
 	
-	/*
 	char *string = "   ---+--+01234506789ab567";
 	char *string1 = "1234";
 	char *string2 = "-567";
@@ -78,13 +77,15 @@ int	main(int argc, char *argv[])
 	printf("%d\n", ft_atoi(string3));
 	printf("%d\n", ft_atoi(string4));
 	printf("%d\n", ft_atoi(string5));
-	*/
+	
+	/*
 	if (argc == 2)
 	{
 		int number = ft_atoi(argv[1]);
 		ft_putnbr(number);
 		write(1, "\n", 1);
 	}
+	*/
 
 	return (0);
 }
