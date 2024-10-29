@@ -6,13 +6,15 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 22:48:33 by diegfern          #+#    #+#             */
-/*   Updated: 2024/10/29 22:50:59 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/10/29 23:03:53 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void ft_bzero(void *s, size_t n);
+void ft_bzero(void *s, size_t n){
+	
+}
 
 /* #include <stdio.h>
 

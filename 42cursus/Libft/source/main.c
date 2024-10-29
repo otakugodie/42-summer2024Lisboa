@@ -46,15 +46,15 @@ int	main(void)
 	//printf("Length of string is %d\n", ft_strlen("Hi, my world"));
 
 	//ft_memset
-	/* 
+	
 	char	str[50] = "This is memset function";
 
 	printf("String is: %s\n", str);
 	ft_memset(str, '0', 5);
 	printf("String is: %s\n", str); 
-	*/
-
 	
+
+
 
 	return (0);
 }

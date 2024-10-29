@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:45:50 by diegfern          #+#    #+#             */
-/*   Updated: 2024/10/29 22:49:17 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/10/29 23:03:22 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ int	ft_strlen(char *str);
 
 void *ft_memset(void *s, int c, size_t n);
 void bzero(void *s, size_t n);
+
+
 
 
 #endif
