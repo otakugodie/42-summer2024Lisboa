@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/27 18:45:50 by diegfern          #+#    #+#             */
-/*   Updated: 2024/10/29 22:49:17 by diegfern         ###   ########.fr       */
+/*   Created: 2024/10/29 22:48:33 by diegfern          #+#    #+#             */
+/*   Updated: 2024/10/29 22:50:59 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft.h"
 
-typedef unsigned long size_t;
+void ft_bzero(void *s, size_t n);
 
-int	ft_isalpha(int c);
-int	ft_isdigit(int c);
-int	ft_isalnum(int c);
-int	ft_isascii(int c);
-int	ft_isprint(int c);
-int	ft_strlen(char *str);
+/* #include <stdio.h>
 
-void *ft_memset(void *s, int c, size_t n);
-void bzero(void *s, size_t n);
+int	main(void)
+{
+	char	str[50] = "This is bzero function";
 
-
-#endif
+	printf("String is: %s\n", str);
+	ft_bzero(str, 5);
+	printf("String is: %s\n", str);
+	return (0);
+}
+ */

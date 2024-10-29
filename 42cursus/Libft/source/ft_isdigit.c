@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/27 18:45:50 by diegfern          #+#    #+#             */
-/*   Updated: 2024/10/29 22:49:17 by diegfern         ###   ########.fr       */
+/*   Created: 2024/10/28 21:45:58 by diegfern          #+#    #+#             */
+/*   Updated: 2024/10/28 21:52:16 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+int	ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+	{
+		return (1);
+	}
+	else
+	{
+		return (0);
+	}
+}
+/* #include <stdio.h>
 
-typedef unsigned long size_t;
-
-int	ft_isalpha(int c);
-int	ft_isdigit(int c);
-int	ft_isalnum(int c);
-int	ft_isascii(int c);
-int	ft_isprint(int c);
-int	ft_strlen(char *str);
-
-void *ft_memset(void *s, int c, size_t n);
-void bzero(void *s, size_t n);
-
-
-#endif
+int	main(void)
+{
+	printf("9 is digit?: %d\n", ft_isdigit('9'));
+	printf("* is digit?: %d\n", ft_isdigit('*'));
+	printf("$ is digit?: %d\n", ft_isdigit('$'));
+	return (0);
+}
+ */

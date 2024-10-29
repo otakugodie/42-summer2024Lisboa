@@ -1,29 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/27 18:45:50 by diegfern          #+#    #+#             */
-/*   Updated: 2024/10/29 22:49:17 by diegfern         ###   ########.fr       */
+/*   Created: 2024/10/29 18:29:09 by diegfern          #+#    #+#             */
+/*   Updated: 2024/10/29 22:46:07 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft.h"
 
-typedef unsigned long size_t;
+void	*ft_memset(void *s, int c, size_t n)
+{
+	size_t			i;
+	unsigned char	*ptr;
 
-int	ft_isalpha(int c);
-int	ft_isdigit(int c);
-int	ft_isalnum(int c);
-int	ft_isascii(int c);
-int	ft_isprint(int c);
-int	ft_strlen(char *str);
+	i = 0;
+	ptr = (unsigned char *)s;
+	while (i < n)
+	{
+		ptr[i] = (unsigned char)c;
+		i++;
+	}
+	return (s);
+}
 
-void *ft_memset(void *s, int c, size_t n);
-void bzero(void *s, size_t n);
+/* #include <stdio.h>
 
+int	main(void)
+{
+	char	str[50] = "This is memset function";
 
-#endif
+	printf("String is: %s\n", str);
+	ft_memset(str, '0', 5);
+	printf("String is: %s\n", str);
+	return (0);
+}
+ */

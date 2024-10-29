@@ -1,29 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/27 18:45:50 by diegfern          #+#    #+#             */
-/*   Updated: 2024/10/29 22:49:17 by diegfern         ###   ########.fr       */
+/*   Created: 2024/10/28 22:16:15 by diegfern          #+#    #+#             */
+/*   Updated: 2024/10/28 22:21:45 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+int	ft_isprint(int c)
+{
+	if (c >= 32 && c <= 126)
+	{
+		return (1);
+	}
+	else
+	{
+		return (0);
+	}
+}
 
-typedef unsigned long size_t;
+/* #include <stdio.h>
 
-int	ft_isalpha(int c);
-int	ft_isdigit(int c);
-int	ft_isalnum(int c);
-int	ft_isascii(int c);
-int	ft_isprint(int c);
-int	ft_strlen(char *str);
-
-void *ft_memset(void *s, int c, size_t n);
-void bzero(void *s, size_t n);
-
-
-#endif
+int	main(void)
+{
+	printf("H is print?: %d\n", ft_isprint('H'));
+	printf("$ is print?: %d\n", ft_isprint('$'));
+	printf("9 is print?: %d\n", ft_isprint('9'));
+	printf("tab is print?: %d\n", ft_isprint('\t'));
+	printf("new line is print?: %d\n", ft_isprint('\n'));
+	return (0);
+}
+ */
