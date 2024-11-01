@@ -6,25 +6,33 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 22:48:33 by diegfern          #+#    #+#             */
-/*   Updated: 2024/10/29 23:03:53 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/01 08:53:46 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void ft_bzero(void *s, size_t n){
-	
+void	ft_bzero(void *s, size_t n)
+{
+	ft_memset(s, '\0', n);
 }
 
-/* #include <stdio.h>
-
-int	main(void)
+/* int	main(void)
 {
 	char	str[50] = "This is bzero function";
+	int	i;
 
 	printf("String is: %s\n", str);
 	ft_bzero(str, 5);
-	printf("String is: %s\n", str);
+	printf("String after bzero is: ");
+
+	i = 0;
+	while (i < 50){
+		printf("%c", str[i]);
+		i++;
+	}
+	printf("\n");
+
 	return (0);
 }
  */
