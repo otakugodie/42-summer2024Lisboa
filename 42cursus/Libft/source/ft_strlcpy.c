@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 17:02:13 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/03 17:03:44 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/04 20:18:14 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,14 @@
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	size_t	size_src;
-	int		i;
+	size_t	i;
 
-	size_src = ft_strlen((char *)src);
 	i = 0;
 	if (!src)
 		return (0);
 	if (size == 0)
 	{
-		return (size_src);
+		return (ft_strlen((char *)src));
 	}
 	while (i < (size - 1))
 	{
@@ -32,20 +30,9 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	}
 	dst[i] = '\0';
 	return (ft_strlen((char *)src));
-	/*
-	if (size > (size_src+1)){
-		ft_memcpy(dst, src, (size_src+1));
-	}
-	*/
-	/* get the length of src */
-	/* check if dstsize is big enough to accomodate src length plus the NUL character
-		*/
-	/* copy the whole src into dst */
-	/* else */
-	/* copy dstsize - 1 characters into dst */
 }
 
-int	main(void)
+/* int	main(void)
 {
 	char dest[20];
 	const char *src = "Hello, World!";
@@ -87,4 +74,4 @@ int	main(void)
 	printf("Resultado: %zu, Destino: '%s'\n\n", result6, dest6);
 
 	return (0);
-}
+} */
