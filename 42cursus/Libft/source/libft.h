@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:45:50 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/04 20:34:31 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/06 06:36:43 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define LIBFT_H
 
 #include <stdio.h>
+#include <string.h>
+//#include <bsd/string.h>
 
 //typedef unsigned long size_t;
 

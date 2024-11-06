@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 20:01:03 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/04 21:32:58 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/06 06:36:57 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,36 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	return (len_dst + len_src);
 }
 
-/* int	main(void)
+int main(void)
 {
-	char			dest[45] = "Today ";
-	char			src[] = "yes";
-	unsigned int	n;
+    char        dst1[30] = "Brave new ";
+    const char  *src1 = "World!";
+    size_t      result1;
 
-	n = 45;
-	printf("Initial destination: %s \n", dest);
-	printf("%ld\n", ft_strlcat(dest, src, n));
-	printf("Final destination: %s \n", dest);
-	return (0);
+    char    dst2[8] = "In a ";
+    const char  *src2 = "brave new world";
+    size_t  result2;
+
+    char    dst3[8] = "In a ";
+    const char  *src3 = "brave new world";
+    size_t  result3;
+    
+
+    // Case 1: Concatenate when dst has enough space for src (dst tiene suficiente espacio para src)
+    result1 = ft_strlcat(dst1, src1, sizeof(dst1));
+    printf("Case 1: Concatenate when dst has enough space for src\n");
+    printf("Result: %zu, Destination: '%s'\n\n", result1, dst1);
+
+    //Case 2: Concatenate when dst does not have enough space for src (truncation) (dst no tiene suficiente espacio para src (truncamiento)
+    result2 = ft_strlcat(dst2, src2, sizeof(dst2));
+    printf("Case 2: Concatenate when dst does not have enough space for src\n");
+    printf("Result: %zu, Destination: '%s'\n\n", result2, dst2);
+
+    //Case 2: Concatenate when dst does not have enough space for src (truncation) (dst no tiene suficiente espacio para src (truncamiento)
+    result3 = strlcat(dst3, src3, sizeof(dst3));
+    printf("Case 2': Concatenate when dst does not have enough space for src\n");
+    printf("Result: %zu, Destination: '%s'\n\n", result3, dst3);
+    
+
+    return (0);
 }
- */
