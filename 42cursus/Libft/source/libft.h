@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:45:50 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/11 22:11:18 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/12 20:34:21 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <stdio.h>
 //# include <stddef.h>
-//# include <string.h>
+# include <string.h>
 //# include <bsd/string.h>
 //# include <ctype.h>
 # include <stdlib.h>
