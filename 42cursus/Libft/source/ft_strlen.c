@@ -6,16 +6,18 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:52:38 by diegfern          #+#    #+#             */
-/*   Updated: 2024/10/29 23:03:55 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:43:39 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_strlen(char *str)
+#include "libft.h"
+
+size_t	ft_strlen(const char *s)
 {
 	int	i;
 
 	i = 0;
-	while (str[i])
+	while (s[i])
 	{
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 17:02:13 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/04 20:18:14 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:45:56 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,20 @@
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
 	size_t	i;
+	size_t	src_len;
 
+	src_len = ft_strlen(src);
 	i = 0;
-	if (!src)
-		return (0);
-	if (size == 0)
+	if (size)
 	{
-		return (ft_strlen((char *)src));
+		while (i < (size - 1) && src[i])
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
 	}
-	while (i < (size - 1))
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	dst[i] = '\0';
-	return (ft_strlen((char *)src));
+	return (src_len);
 }
 
 /* int	main(void)

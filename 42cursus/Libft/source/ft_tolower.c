@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 09:39:31 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/06 12:29:47 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:30:40 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	ft_tolower(int c)
 {
-	if (c > 'A' && c < 'Z')
-		return (c + ' ');
+	if (c >= 'A' && c <= 'Z')
+		return (c += ' ');
 	else
 		return (c);
 }

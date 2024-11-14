@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 16:17:12 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/09 17:57:35 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/13 19:55:58 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,16 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t	i;
 
+	if (n == 0)
+		return (0);
 	i = 0;
 	while ((s1[i] || s2[i]) && i < n)
 	{
-		if (s1[i] == s2[i])
-			i++;
-		else
-			return (s1[i] - s2[i]);
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
 	}
-	return (s1[i] - s2[i]);
+	return (0);
 }
 
 /* int	main(void)
@@ -43,9 +44,9 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 		// "apple" es menor porque es más corto
 	printf("Test 7: %d\n", ft_strncmp("Apple", "apple", 5) < 0);
 		// 'A' < 'a' en ASCII
-	printf("Test 8: %d\n", ft_strncmp("", "apple", 3) < 0);     
+	printf("Test 8: %d\n", ft_strncmp("", "apple", 3) < 0);
 		// Cadena vacía es menor que cualquier cadena no vacía
-	printf("Test 9: %d\n", ft_strncmp("apple", "", 3) > 0);     
+	printf("Test 9: %d\n", ft_strncmp("apple", "", 3) > 0);
 		// "apple" es mayor que cadena vacía
 	printf("Test 10: %d\n", ft_strncmp("apple", "banana", 0) == 0);
 		// Si n es 0, siempre devuelve 0

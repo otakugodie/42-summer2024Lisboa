@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 09:38:43 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/06 12:30:23 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:30:48 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	ft_toupper(int c)
 {
-	if (c > 'a' && c < 'z')
-		return (c - ' ');
+	if (c >= 'a' && c <= 'z')
+		return (c -= ' ');
 	else
 		return (c);
 }
