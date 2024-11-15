@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 21:07:28 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/14 06:41:38 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/14 20:36:33 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	result = ft_calloc(10, sizeof(int));
 	printf("Test 1: %s\n", result != NULL ? "OK" : "FAIL");
 	free(result);
-	// Prueba 2: Prueba con tamaño cero en nmemb (puede devolver NULL 
+	// Prueba 2: Prueba con tamaño cero en nmemb (puede devolver NULL
 	//o un puntero no nulo dependiendo de la implementación)
 	result = ft_calloc(0, sizeof(int));
 	printf("Test 2: %s\n", result != NULL ? "OK" : "FAIL");
 	free(result);
-	// Prueba 3: Prueba con tamaño cero en size (puede devolver NULL 
+	// Prueba 3: Prueba con tamaño cero en size (puede devolver NULL
 	//o un puntero no nulo dependiendo de la implementación)
 	result = ft_calloc(10, 0);
 	printf("Test 3: %s\n", result != NULL ? "OK" : "FAIL");
