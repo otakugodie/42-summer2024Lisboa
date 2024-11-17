@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 23:22:36 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/17 14:28:25 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/17 15:39:23 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 	return (new_s);
 }
 
-/* char	ft_upper(unsigned int i, char digit)
+/* static char	ft_upper(unsigned int i, char digit)
 {
 	if (i % 2 == 0 && (digit >= 'a' && digit <= 'z'))
 		return ((digit -= ' '));
 	return (digit);
 }
 
-char	ft_lower(unsigned int i, char digit)
+static char	ft_lower(unsigned int i, char digit)
 {
 	if (i % 2 == 0 && (digit >= 'A' && digit <= 'Z'))
 		return ((digit += ' '));
