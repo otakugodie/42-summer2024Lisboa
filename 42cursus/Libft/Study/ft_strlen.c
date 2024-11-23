@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 15:33:38 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/22 14:26:52 by diegfern         ###   ########.fr       */
+/*   Created: 2024/11/22 14:19:50 by diegfern          #+#    #+#             */
+/*   Updated: 2024/11/22 14:28:02 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
+#include "libft.h"
 
-# define LIBFT_H
+size_t	ft_strlen(const char *s)
+{
+	size_t	i;
 
-# include <stdio.h>
-
-size_t ft_strlen(const char *s);
-
-#endif
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
