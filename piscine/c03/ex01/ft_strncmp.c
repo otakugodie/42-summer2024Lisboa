@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 13:06:30 by diegfern          #+#    #+#             */
-/*   Updated: 2024/09/26 14:05:14 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/09 18:03:25 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,9 @@ int	main(void)
 {
 	printf("%d\n", ft_strncmp("Hello", "Hello world", 7));
     printf("%d\n", strncmp ("Hello", "Hello world", 7));
-	/*
-	printf("%d\n", ft_strcmp("Hello", "He"));
-	printf("%d\n", ft_strcmp("He", "Hello"));
-	printf("%d\n\n", ft_strcmp("Hello", "Hello"));
-	*/
+
 	printf("%d\n", ft_strncmp("Helo world", "Hello", 4));
     printf("%d\n", strncmp("Helo world", "Hello", 4));
-	/*
-	printf("%d\n", strcmp("Hello", "He"));
-	printf("%d\n", strcmp("He", "Hello"));
-	printf("%d\n", strcmp("Hello", "Hello"));
-	*/
+
 	return (0);
 }

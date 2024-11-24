@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:43:49 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/24 13:25:29 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/24 09:19:00 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	size_t	i;
 
 	i = 0;
-	if (dest != src)
+	if (!dest && !src)
+		return (NULL);
+	elseif (dest != src)
 	{
 		while (i < n)
 		{

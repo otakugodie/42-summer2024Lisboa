@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 17:01:41 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/24 13:25:31 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/11/14 06:45:02 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	unsigned char	*dest_temp;
 	unsigned char	*src_temp;
 
+	if (!dest && !src)
+		return (NULL);
 	dest_temp = (unsigned char *)dest;
 	src_temp = (unsigned char *)src;
 	i = 0;
