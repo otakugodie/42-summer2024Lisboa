@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 21:24:09 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/29 12:38:07 by diegfern         ###   ########.fr       */
+/*   Created: 2024/11/29 12:38:25 by diegfern          #+#    #+#             */
+/*   Updated: 2024/11/29 12:41:55 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "ft_printf.h"
 
-#include <stdarg.h>
-#include <stdio.h>
+size_t	ft_strlen(const char *s)
+{
+	size_t i;
 
-int	ft_printf(const char *str, ...);
-size_t ft_strlen(const char *s);
-
-#endif
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
