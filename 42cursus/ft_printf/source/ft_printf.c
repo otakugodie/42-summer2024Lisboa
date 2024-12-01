@@ -6,25 +6,39 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 21:23:17 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/29 12:44:54 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/01 20:12:52 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
 int	ft_printf(const char *str, ...){
+	int	i;
 	int	ac;
 	int	sig;
 	
+	i = 0;
 	va_list ap;		//ap> argument pointer
 	va_start(ap, str);
 
 	printf("Iniciamos argumentos\n");
+	while(i < ft_strlen(str)){
+		write(1, &str[i], 1);
+		
+		if(str[i]=='s'){
+			//printf("%s", va_arg(ap, char *));
+			printf(" Entro en s\n");
+			char *strtemp = va_arg(ap, char *);
+			printf("%s", strtemp);
+		}
+		/* if(str[i]=='d'){
+			printf("%d", va_arg(ap, int));
+		} */
+		
+		i++;
+	}
 	printf ("Lenght is: %ld\n", ft_strlen(str));
-
 	//va_arg(ap, int);
-
-
 	return (0);
 }
 
@@ -58,7 +72,7 @@ int	main(void)
 
 	//total = sumatoria(3, 1,2,3);
 	//printf ("Total: %d\n", total);
-	ft_printf ("Hello my name is %s, I am student in %d\n", "Diego", 42);
+	ft_printf ("Hello my name is, I am tudent in %d\n", "Diego", 42);
 
 	return (0);
 }
