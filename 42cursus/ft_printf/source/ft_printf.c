@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 21:23:17 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/01 20:12:52 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/02 23:55:26 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	main(void)
 
 	//total = sumatoria(3, 1,2,3);
 	//printf ("Total: %d\n", total);
-	ft_printf ("Hello my name is, I am tudent in %d\n", "Diego", 42);
+	ft_printf ("Hello my name is %s, I am tudent in %d\n", "Diego", 42);
 
 	return (0);
 }
