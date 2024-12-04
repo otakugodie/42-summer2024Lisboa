@@ -1,16 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 21:24:09 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/18 21:25:53 by diegfern         ###   ########.fr       */
+/*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
+/*   Updated: 2024/12/03 19:11:32 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "get_next_line.h"
 
-#endif
+char *get_next_line(int fd);

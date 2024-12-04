@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 15:33:38 by diegfern          #+#    #+#             */
-/*   Updated: 2024/11/26 20:08:27 by diegfern         ###   ########.fr       */
+/*   Created: 2024/12/03 19:08:21 by diegfern          #+#    #+#             */
+/*   Updated: 2024/12/03 19:10:51 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
-# define LIBFT_H
 
-# include <stdio.h>
-
-size_t ft_strlen(const char *s);
 
 #endif

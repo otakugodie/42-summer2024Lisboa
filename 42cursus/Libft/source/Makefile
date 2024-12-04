@@ -6,7 +6,7 @@
 #    By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/12 22:08:00 by diegfern          #+#    #+#              #
-#    Updated: 2024/11/17 17:25:46 by diegfern         ###   ########.fr        #
+#    Updated: 2024/12/03 18:12:57 by diegfern         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,9 +26,9 @@ all: $(NAME)
 
 # Creación de la librería
 $(NAME): $(OBJ)
-	@echo "\nCreating static library $(NAME)..."
+	@echo "Creating static library $(NAME)..."
 	@ar rcs $(NAME) $(OBJ)
-	@echo "\nDone!"
+	@echo "Done!"
 
 # Compilación de archivos .c en .o
 %.o: %.c $(HDR)
