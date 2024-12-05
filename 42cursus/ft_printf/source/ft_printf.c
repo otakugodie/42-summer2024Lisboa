@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 21:23:17 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/03 18:49:11 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/05 17:41:46 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,24 +46,24 @@ void	ft_print_ptr(void *ptr, long int *counter)
 	ft_print_hex_lower((unsigned long)ptr, counter);
 }
 
-void	ft_parser_args(char type_arg, va_list ap, long int *counter)
+void	ft_parser_args(char type_arg, va_list *ap, long int *counter)
 {
 	if (type_arg == 'c')
-		ft_print_char(va_arg(ap, int), counter);
+		ft_print_char(va_arg(*ap, int), counter);
 	if (type_arg == 's')
-		ft_print_str(va_arg(ap, char *), counter);
+		ft_print_str(va_arg(*ap, char *), counter);
 	if (type_arg == 'd' || type_arg == 'i')
-		ft_print_num(va_arg(ap, int), counter);
+		ft_print_num(va_arg(*ap, int), counter);
 	if (type_arg == 'u')
-		ft_print_num(va_arg(ap, unsigned int), counter);
+		ft_print_num(va_arg(*ap, unsigned int), counter);
 	if (type_arg == 'X')
-		ft_print_hex_upper(va_arg(ap, unsigned int), counter);
+		ft_print_hex_upper(va_arg(*ap, unsigned int), counter);
 	if (type_arg == 'x')
-		ft_print_hex_lower(va_arg(ap, unsigned int), counter);
+		ft_print_hex_lower(va_arg(*ap, unsigned int), counter);
 	if (type_arg == '%')
 		ft_print_char('%', counter);
 	if (type_arg == 'p')
-		ft_print_ptr(va_arg(ap, void *), counter);
+		ft_print_ptr(va_arg(*ap, void *), counter);
 }
 
 int	ft_printf(const char *str, ...)
@@ -82,7 +82,7 @@ int	ft_printf(const char *str, ...)
 		if (str[i] == '%')
 		{
 			i++;
-			ft_parser_args(str[i], ap, &counter);
+			ft_parser_args(str[i], &ap, &counter);
 		}
 		else
 		{
@@ -162,7 +162,6 @@ int	ft_printf(const char *str, ...)
 	std_ret = printf("printf:    [%%]\n");
 	ft_ret = ft_printf("ft_printf: [%%]\n");
 	printf("Return values: printf = %d, ft_printf = %d\n", std_ret, ft_ret);
-
 
 	printf("\n\n\n===== EDGE CASES TESTING =====\n");
 

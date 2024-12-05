@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 21:24:09 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/03 18:11:23 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:05:07 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,6 @@ void	ft_print_num(long int n, long int *counter);
 void	ft_print_hex_upper(unsigned long int n, long int *counter);
 void	ft_print_hex_lower(unsigned long int n, long int *counter);
 void	ft_print_ptr(void *ptr, long int *counter);
-void	ft_parser_args(char type_arg, va_list ap, long int *counter);
+void	ft_parser_args(char type_arg, va_list *ap, long int *counter);
 
 #endif
