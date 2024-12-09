@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/08 15:10:48 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/09 20:04:06 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ char	*get_next_line(int fd);
 int	main(void)
 {
 	int		fd;
+	int		i;
 	char	buffer[10];
 	ssize_t	num_bytes;
 
@@ -26,13 +27,17 @@ int	main(void)
 		printf("Error trying open file \n");
 	else
 	{
-		num_bytes = read(fd, buffer, 5);
+		i = 0;
+		while (i <= 3 ){
+			num_bytes = read(fd, buffer, 5);
+			
+			if (num_bytes == 0)
+				printf("File is empty\n");
+			else
+				printf("Number of characters is: %ld, and his contents is: %s\n", num_bytes, buffer);
+			i++;
+		}
 		close(fd);
-		if (num_bytes==0)
-			printf("File is empty\n");
-		else
-			printf("Number of characters is: %ld, and his contents is: %s\n",
-				num_bytes, buffer);
 	}
 	return (0);
 }
