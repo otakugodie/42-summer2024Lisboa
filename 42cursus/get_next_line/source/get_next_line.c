@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/09 22:41:10 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/10 20:56:05 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,15 @@ char	*get_next_line(int fd);
 
 int	main(void)
 {
+	char	*line;
 	int		fd;
 	char	buffer[BUFFER_SIZE + 1];
 	ssize_t	num_bytes;
 
-	fd = open("testfile", O_RDONLY);
+	line = get_next_line(fd);
+	printf("line: %s", line);
+	/*
+	fd = open("testfile", O_RDONLY | O_CREAT);
 	if (fd == -1)
 	{
 		printf("Error trying open file \n");
@@ -36,5 +40,14 @@ int	main(void)
 	if (num_bytes == -1)
 		printf("Error: Unable to read file\n");
 	close(fd);
+	*/
 	return (0);
+}
+
+char	*get_next_line(int fd)
+{
+	static char *line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
 }

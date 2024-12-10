@@ -6,7 +6,8 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:08:36 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/03 19:08:37 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/09 22:48:42 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "get_next_line.h"
