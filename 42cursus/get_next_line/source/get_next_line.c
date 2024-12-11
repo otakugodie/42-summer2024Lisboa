@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/10 20:56:05 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/11 18:19:13 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@ int	main(void)
 {
 	char	*line;
 	int		fd;
-	char	buffer[BUFFER_SIZE + 1];
-	ssize_t	num_bytes;
 
+	fd = open("testfile", O_RDONLY);
 	line = get_next_line(fd);
 	printf("line: %s", line);
+	free(line);
+	close(fd);
 	/*
 	fd = open("testfile", O_RDONLY | O_CREAT);
 	if (fd == -1)
@@ -46,8 +47,34 @@ int	main(void)
 
 char	*get_next_line(int fd)
 {
-	static char *line;
+	static char	*stack_line;
+	ssize_t		num_bytes;
+	char		*line;
+	char		*buffer;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (0);
+		return (NULL);
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	num_bytes = read(fd, buffer, BUFFER_SIZE);
+	if (num_bytes > 0)
+	 
+
+
+	
+	while (num_bytes > 0)
+	{
+		buffer[num_bytes] = '\0';
+		while (buffer[i] != '\n')
+		{
+			write(1, &buffer[i], 1);
+			i++;
+		}
+		// printf("Bytes read: %ld, Content: \"%s\"\n", num_bytes, buffer);
+		// num_bytes = read(fd, buffer, BUFFER_SIZE);
+	}
+	if (num_bytes == -1)
+		printf("Error: Unable to read file\n");
+	return (line);
 }
