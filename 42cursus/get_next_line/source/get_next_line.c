@@ -6,15 +6,92 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/15 19:28:01 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/17 19:26:49 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*get_next_line(int fd);
+char		*get_next_line(int fd);
+static char	*ft_read_line(int fd, char *buffer, char *previous_line);
+static char	*extract_chars(char *line);
 
-int	main(void)
+static char	*ft_read_line(int fd, char *buffer, char *previous_line)
+{
+	int		num_bytes;
+	char	*line_temp;
+
+	num_bytes = 1;
+	while (num_bytes)
+	{
+		num_bytes = read(fd, buffer, BUFFER_SIZE);
+		if (num_bytes < 0)
+		{
+			free(buffer);
+    		free(previous_line);
+			return (NULL);
+		}
+		if (num_bytes == 0)
+			break ;
+		buffer[num_bytes] = '\0';
+		if (!previous_line)
+			previous_line = ft_strdup("");
+		line_temp = previous_line;
+		previous_line = ft_strjoin(previous_line, buffer);
+		free(line_temp);
+		line_temp = NULL;
+		if (ft_strchr(buffer, '\n'))
+			break ;
+	}
+	return (previous_line);
+}
+
+static char	*extract_chars(char *line)
+{
+	size_t	i;
+	char	*previous_line;
+
+	i = 0;
+	while (line[i] != '\n' && line[i] != '\0')
+		i++;
+	if (line[i] == '\0')
+		return (NULL);
+	previous_line = ft_substr(line, i + 1, ft_strlen(line) - i);
+	if (*previous_line == '\0')
+	{
+		free(previous_line);
+		previous_line = NULL;
+	}
+	line[i + 1] = '\0';
+	return (previous_line);
+}
+
+char	*get_next_line(int fd)
+{
+	char		*buffer;
+	static char	*previous_line;
+	char		*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	line = ft_read_line(fd, buffer, previous_line);
+	free(buffer);
+	buffer = NULL;
+	if (!line)
+		return (NULL);
+	previous_line = extract_chars(line);
+	if (!previous_line || *previous_line == '\0')
+	{
+		free(previous_line);
+		previous_line = NULL;
+	}
+	return (line);
+}
+
+/* int	main(void)
 {
 	char	*line;
 	int		fd;
@@ -24,57 +101,6 @@ int	main(void)
 	printf("line: %s", line);
 	free(line);
 	close(fd);
-	/*
-	fd = open("testfile", O_RDONLY | O_CREAT);
-	if (fd == -1)
-	{
-		printf("Error trying open file \n");
-		return (1);
-	}
-	num_bytes = read(fd, buffer, BUFFER_SIZE);
-	while (num_bytes > 0)
-	{
-		buffer[num_bytes] = '\0';
-		printf("Bytes read: %ld, Content: \"%s\"\n", num_bytes, buffer);
-		num_bytes = read(fd, buffer, BUFFER_SIZE);
-	}
-	if (num_bytes == -1)
-		printf("Error: Unable to read file\n");
-	close(fd);
-	*/
 	return (0);
 }
-
-char	*get_next_line(int fd)
-{
-	static char	*stack_line;
-	ssize_t		num_bytes;
-	char		*line;
-	char		*buffer;
-
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
-		return (NULL);
-	num_bytes = read(fd, buffer, BUFFER_SIZE);
-	if (num_bytes > 0)
-	 
-
-
-	
-	while (num_bytes > 0)
-	{
-		buffer[num_bytes] = '\0';
-		while (buffer[i] != '\n')
-		{
-			write(1, &buffer[i], 1);
-			i++;
-		}
-		// printf("Bytes read: %ld, Content: \"%s\"\n", num_bytes, buffer);
-		// num_bytes = read(fd, buffer, BUFFER_SIZE);
-	}
-	if (num_bytes == -1)
-		printf("Error: Unable to read file\n");
-	return (line);
-}
+ */
