@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/17 19:26:49 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/19 07:44:37 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char		*get_next_line(int fd);
 static char	*ft_read_line(int fd, char *buffer, char *previous_line);
-static char	*extract_chars(char *line);
+static char	*ft_extract_chars(char *line);
 
 static char	*ft_read_line(int fd, char *buffer, char *previous_line)
 {
@@ -22,15 +22,11 @@ static char	*ft_read_line(int fd, char *buffer, char *previous_line)
 	char	*line_temp;
 
 	num_bytes = 1;
-	while (num_bytes)
+	while (num_bytes > 0)
 	{
 		num_bytes = read(fd, buffer, BUFFER_SIZE);
 		if (num_bytes < 0)
-		{
-			free(buffer);
-    		free(previous_line);
 			return (NULL);
-		}
 		if (num_bytes == 0)
 			break ;
 		buffer[num_bytes] = '\0';
@@ -46,7 +42,7 @@ static char	*ft_read_line(int fd, char *buffer, char *previous_line)
 	return (previous_line);
 }
 
-static char	*extract_chars(char *line)
+static char	*ft_extract_chars(char *line)
 {
 	size_t	i;
 	char	*previous_line;
@@ -82,7 +78,7 @@ char	*get_next_line(int fd)
 	buffer = NULL;
 	if (!line)
 		return (NULL);
-	previous_line = extract_chars(line);
+	previous_line = ft_extract_chars(line);
 	if (!previous_line || *previous_line == '\0')
 	{
 		free(previous_line);
@@ -93,13 +89,22 @@ char	*get_next_line(int fd)
 
 /* int	main(void)
 {
-	char	*line;
 	int		fd;
+	char	*line;
+	int		line_count;
 
+	line_count = 1;
 	fd = open("testfile", O_RDONLY);
-	line = get_next_line(fd);
-	printf("line: %s", line);
-	free(line);
+	if (fd < 0)
+	{
+		printf("Error: No se pudo abrir el archivo\n");
+		return (1);
+	}
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		printf("Linea %d: %s", line_count++, line);
+		free(line);
+	}
 	close(fd);
 	return (0);
 }
