@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/19 07:44:37 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:55:00 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 char		*get_next_line(int fd);
 static char	*ft_read_line(int fd, char *buffer, char *previous_line);
 static char	*ft_extract_chars(char *line);
+
+static char	*ft_clear(char **str)
+{
+	free(*str);
+	*str = NULL;
+	return (NULL);
+}
 
 static char	*ft_read_line(int fd, char *buffer, char *previous_line)
 {
@@ -26,7 +33,9 @@ static char	*ft_read_line(int fd, char *buffer, char *previous_line)
 	{
 		num_bytes = read(fd, buffer, BUFFER_SIZE);
 		if (num_bytes < 0)
+		{
 			return (NULL);
+		}
 		if (num_bytes == 0)
 			break ;
 		buffer[num_bytes] = '\0';
@@ -34,8 +43,7 @@ static char	*ft_read_line(int fd, char *buffer, char *previous_line)
 			previous_line = ft_strdup("");
 		line_temp = previous_line;
 		previous_line = ft_strjoin(previous_line, buffer);
-		free(line_temp);
-		line_temp = NULL;
+		ft_clear(&line_temp);
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
@@ -54,10 +62,7 @@ static char	*ft_extract_chars(char *line)
 		return (NULL);
 	previous_line = ft_substr(line, i + 1, ft_strlen(line) - i);
 	if (*previous_line == '\0')
-	{
-		free(previous_line);
-		previous_line = NULL;
-	}
+		ft_clear(&previous_line);
 	line[i + 1] = '\0';
 	return (previous_line);
 }
@@ -74,20 +79,16 @@ char	*get_next_line(int fd)
 	if (!buffer)
 		return (NULL);
 	line = ft_read_line(fd, buffer, previous_line);
-	free(buffer);
-	buffer = NULL;
+	ft_clear(&buffer);
 	if (!line)
 		return (NULL);
 	previous_line = ft_extract_chars(line);
 	if (!previous_line || *previous_line == '\0')
-	{
-		free(previous_line);
-		previous_line = NULL;
-	}
+		ft_clear(&previous_line);
 	return (line);
 }
 
-/* int	main(void)
+/*int	main(void)
 {
 	int		fd;
 	char	*line;
