@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:08:36 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/20 07:08:44 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:57:11 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 size_t	ft_strlen(const char *s)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
+	if (!s)
+		return (0);
 	while (s[i])
-	{
 		i++;
-	}
 	return (i);
 }
 

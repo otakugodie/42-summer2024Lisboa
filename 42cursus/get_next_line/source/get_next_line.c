@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/22 19:55:00 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:57:09 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,11 @@ static char	*ft_extract_chars(char *line);
 
 static char	*ft_clear(char **str)
 {
-	free(*str);
-	*str = NULL;
+	if (*str)
+	{
+		free(*str);
+		*str = NULL;
+	}
 	return (NULL);
 }
 
@@ -34,6 +37,7 @@ static char	*ft_read_line(int fd, char *buffer, char *previous_line)
 		num_bytes = read(fd, buffer, BUFFER_SIZE);
 		if (num_bytes < 0)
 		{
+			//ft_clear(&previous_line);
 			return (NULL);
 		}
 		if (num_bytes == 0)
@@ -84,7 +88,9 @@ char	*get_next_line(int fd)
 		return (NULL);
 	previous_line = ft_extract_chars(line);
 	if (!previous_line || *previous_line == '\0')
+	{
 		ft_clear(&previous_line);
+	}
 	return (line);
 }
 
