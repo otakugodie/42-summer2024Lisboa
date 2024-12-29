@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/28 20:15:29 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/29 20:24:46 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*ft_extract_chars(char *line);
 
 static char	*ft_clear(char **str)
 {
-	if (*str)
+	if (str && *str)
 	{
 		free(*str);
 		*str = NULL;
@@ -59,13 +59,15 @@ static char	*ft_extract_chars(char *line)
 	size_t	i;
 	char	*previous_line;
 
+	if (!line)
+		return (NULL);
 	i = 0;
 	while (line[i] != '\n' && line[i] != '\0')
 		i++;
 	if (line[i] == '\0')
 		return (NULL);
 	previous_line = ft_substr(line, i + 1, ft_strlen(line) - i);
-	if (*previous_line == '\0')
+	if (!previous_line || *previous_line == '\0')
 		ft_clear(&previous_line);
 	line[i + 1] = '\0';
 	return (previous_line);
