@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/30 23:47:28 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/31 07:53:33 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/*int	main(void)
+/* int	main(void)
 {
 	int		fd;
 	char	*line;
@@ -119,5 +119,4 @@ char	*get_next_line(int fd)
 	}
 	close(fd);
 	return (0);
-}
- */
+} */
