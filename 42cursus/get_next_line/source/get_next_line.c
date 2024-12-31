@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/31 08:16:58 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/31 08:18:15 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-
-void test_get_next_line(int fd)
+/*void test_get_next_line(int fd)
 {
     char *line;
     int line_count = 1;
@@ -115,7 +114,7 @@ void test_get_next_line(int fd)
         printf("No lines read.\n");
 }
 
-/* int main(int argc, char **argv)
+ int main(int argc, char **argv)
 {
     char *line;
 	
