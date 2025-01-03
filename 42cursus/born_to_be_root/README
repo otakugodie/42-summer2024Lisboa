@@ -1,4 +1,5 @@
 LVM
-SSH
+sudo (reglas estrictas)
+SSH: 4242 (no debe ser posible conectarte a través de SSH como root)
 cronjob
-UFW
+UFW (solamente el puerto 4242 abierto)
