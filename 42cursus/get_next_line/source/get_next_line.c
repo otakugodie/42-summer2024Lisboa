@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/31 08:18:15 by diegfern         ###   ########.fr       */
+/*   Updated: 2024/12/31 08:27:32 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/*void test_get_next_line(int fd)
+void test_get_next_line(int fd)
 {
     char *line;
     int line_count = 1;
@@ -114,34 +114,33 @@ char	*get_next_line(int fd)
         printf("No lines read.\n");
 }
 
- int main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     char *line;
-	
-	// Comprobar si se pasa un archivo como argumento
-    if (argc < 2)
+    int fd;
+
+    // Si se pasa un archivo como argumento, abrirlo
+    if (argc > 1)
     {
-        fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
-        return 1;
-    }
+        fd = open(argv[1], O_RDONLY);
+        if (fd < 0)
+        {
+            perror("Error opening file");
+            return 1;
+        }
 
-    // Abrir el archivo
-    int fd = open(argv[1], O_RDONLY);
-    if (fd < 0)
+        // Test lectura desde un archivo
+        printf("Reading from file: %s\n", argv[1]);
+        test_get_next_line(fd);
+        close(fd);
+    }
+    else
     {
-        perror("Error opening file");
-        return 1;
+        // Test lectura desde stdin
+        printf("\nReading from stdin (press Ctrl+D to end):\n");
+        fd = 0; // 0 es el file descriptor para stdin
+        test_get_next_line(fd);
     }
-
-    // Tes lectura desde un archivo
-    printf("Reading from file: %s\n", argv[1]);
-    test_get_next_line(fd);
-    close(fd);
-
-    // Test lectura desde stdin
-    printf("\nReading from stdin (press Ctrl+D to end):\n");
-    fd = 0; // 0 es el file descriptor para stdin
-    test_get_next_line(fd);
 
     // Test file descriptor inválido
     printf("\nTesting with an invalid file descriptor (42):\n");
@@ -153,4 +152,3 @@ char	*get_next_line(int fd)
 
     return 0;
 }
- */
