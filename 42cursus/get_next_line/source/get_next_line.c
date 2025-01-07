@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 19:07:48 by diegfern          #+#    #+#             */
-/*   Updated: 2024/12/31 08:27:32 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/01/07 18:19:09 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,12 @@ void test_get_next_line(int fd)
     while ((line = get_next_line(fd)) != NULL)
     {
         printf("Line %d: %s", line_count, line);
-        free(line); // Asegúrate de liberar la memoria después de usarla
+        if (line[0] != '\0' && line[ft_strlen(line) - 1] != '\n')
+            printf("\n"); // Asegura salto de línea si falta
+        free(line); // Liberar memoria para evitar fugas
         line_count++;
     }
+
     if (line_count == 1)
         printf("No lines read.\n");
 }
@@ -138,17 +141,19 @@ int main(int argc, char **argv)
     {
         // Test lectura desde stdin
         printf("\nReading from stdin (press Ctrl+D to end):\n");
-        fd = 0; // 0 es el file descriptor para stdin
-        test_get_next_line(fd);
+        test_get_next_line(STDIN_FILENO);
     }
 
-    // Test file descriptor inválido
+    // Test con descriptor de archivo inválido
     printf("\nTesting with an invalid file descriptor (42):\n");
     line = get_next_line(42);
     if (line == NULL)
         printf("Correctly returned NULL for invalid file descriptor.\n");
     else
+    {
         printf("Error: Expected NULL but got: %s\n", line);
+        free(line); // Liberar memoria si se asignó
+    }
 
     return 0;
 }
