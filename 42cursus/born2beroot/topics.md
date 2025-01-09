@@ -162,3 +162,45 @@ all commented
 ---
 
 
+
+
+
+
+# Instalar un paquete
+apt install package_name
+
+
+# Reiniciar la maquina
+sudo reboot
+
+# Validar si sudo se instalo
+sudo -V opcional: sudo -V | more
+
+# Crear un usuario
+sudo adduser cuenta_usuario
+## Si es un usuario que ya existe aparecera un mensaje
+
+# Crear un grupo
+sudo addgroup nombre_grupo
+## Para validar si ya se creo un grupo y/o ver los miembros del grupo
+getent group nombre_grupo o podemos ver en cat /etc/group
+
+# Añadir a un usuario en un grupo
+sudo adduser cuenta_usuario nombre_grupo
+
+# SSH - Validar que ssh o ufw están corriendo o reiniciarlo
+sudo service ssh status ó sudo service ufw status
+sudo service ssh restart -> sudo service nombre_servicio restart
+
+# SSH - Para configurar ssh
+vim /etc/ssh/sshd_config (Como root o sudo), seguido revisar
+vim /etc/ssh/ssh_config
+
+# UFW - Para habilitar UFW
+sudo ufw enable
+
+# UFW - Permitir conexiones por puerto
+sudo ufw allow 4242 -> sudo ufw allow #### (### No de Puerto)
+
+# UFW - Validar el status de los puertos de UFW
+sudo ufw status
