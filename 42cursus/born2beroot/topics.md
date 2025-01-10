@@ -169,9 +169,14 @@ all commented
 # Instalar un paquete
 apt install package_name
 
-
 # Reiniciar la maquina
 sudo reboot
+
+# Ver hostname o IP de hostname
+hostname / hostname -I
+
+# Apagar maquina
+sudo systemctl poweroff
 
 # Validar si sudo se instalo
 sudo -V opcional: sudo -V | more
@@ -189,12 +194,15 @@ getent group nombre_grupo o podemos ver en cat /etc/group
 sudo adduser cuenta_usuario nombre_grupo
 
 # SSH - Validar que ssh o ufw están corriendo o reiniciarlo
-sudo service ssh status ó sudo service ufw status
+sudo service ssh status ó sudo service ufw status ó sudo grep Port /etc/ssh/sshd_config
 sudo service ssh restart -> sudo service nombre_servicio restart
 
 # SSH - Para configurar ssh
 vim /etc/ssh/sshd_config (Como root o sudo), seguido revisar
 vim /etc/ssh/ssh_config
+
+# SSH - Conectarse desde PC externo
+ssh nombre_usuario@direccion_ip -p 4242
 
 # UFW - Para habilitar UFW
 sudo ufw enable
@@ -204,3 +212,6 @@ sudo ufw allow 4242 -> sudo ufw allow #### (### No de Puerto)
 
 # UFW - Validar el status de los puertos de UFW
 sudo ufw status
+
+# SUDO - Password fuerte (Configurar contraseña)
+Creo un fichero en /etc/sudoers.d/sudo_conf -> Lo llame sudo_conf -> touch /etc/sudoers.d/sudo_conf
