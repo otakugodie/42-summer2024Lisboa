@@ -164,7 +164,8 @@ all commented
 
 
 
-
+# Ver particiones
+lsblk
 
 # Instalar un paquete
 apt install package_name
@@ -215,3 +216,4 @@ sudo ufw status
 
 # SUDO - Password fuerte (Configurar contraseña)
 Creo un fichero en /etc/sudoers.d/sudo_conf -> Lo llame sudo_conf -> touch /etc/sudoers.d/sudo_conf
+
