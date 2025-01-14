@@ -188,6 +188,7 @@ sudo adduser cuenta_usuario
 
 # Crear un grupo
 sudo addgroup nombre_grupo
+
 ## Para validar si ya se creo un grupo y/o ver los miembros del grupo
 getent group nombre_grupo o podemos ver en cat /etc/group
 
@@ -217,3 +218,39 @@ sudo ufw status
 # SUDO - Password fuerte (Configurar contraseña)
 Creo un fichero en /etc/sudoers.d/sudo_conf -> Lo llame sudo_conf -> touch /etc/sudoers.d/sudo_conf
 
+# Politicas de contraseñas fuertes
+En /etc/login.defs
+	PASS_MAX_DAYS -> tiempo de expiración de la contraseña
+	PASS_MIN_DAYS -> mínimo de días permitido antes de modificar una contraseña
+	PASS_WARN_AGE -> mensaje de aviso días que faltan para que expire su contraseña
+En vim /etc/pam.d/common-password
+	minlen=10
+	ucredit=-1 	-> 	Upper
+	dcredit=-1	->	Digit
+	lcredit=-1	->	Lower
+	maxrepeat=3	-> +3 veces seguidas el mismo carácter
+	reject_username -> No puede contener nombre_usuario
+	difok=7		->	Al menos 7 caracteres que no sean parte de la antigua contraseña
+	enforce_for_root	-> Esta politica aplica para el usuario root
+
+
+# USER - Validar y ajustar expiracion de dias
+sudo chage -l username
+sudo chage -m <time> nombre_usuarios (time # de dias, ex. 5), m: minimo
+sudo chage -M <time> <username>, M: Maximo de dias entre cambios
+
+# Network - Validar si un puerto esta libre o no
+ss -tuln | grep -E '4242' -> No deberia mostrar nada en pantalla, si el puerto esta libre
+Si esta ocupado, lo cambio en virtualbox en Host port
+
+# CRONNTAB - Configurar crontab
+sudo crontab -u root -e
+*/10 * * * * sh /ruta del script (*/10 * * * * sh /home/diegfern/monitoring.sh)
+
+# CRON - Validar si cron esta ejecutandose
+## Ver crons del usuario -> 
+crontab -l
+
+## Ver status del cron y habilitar
+sudo systemctl status cron
+sudo systemctl enable cron
