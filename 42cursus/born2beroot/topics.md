@@ -254,3 +254,96 @@ crontab -l
 ## Ver status del cron y habilitar
 sudo systemctl status cron
 sudo systemctl enable cron
+
+
+
+
+
+
+
+
+Evaluation
+Guias
+https://github.com/gemartin99/Born2beroot-Tutorial?tab=readme-ov-file#7--signaturetxt-
+https://github.com/pasqualerossi/Born2BeRoot-Guide
+
+Evaluacion
+https://www.42evals.com/
+https://www.42evals.com/sheets/66b9c78fe6188711fc26b86a
+
+Voy en Hostname and partitions
+Eval Born2BeRoot
+
+Validar firma digital:
+Voy a la ruta donde tengo el .vdi de la maquina virtual y ejecuto en el terminal
+  'shasum nombre_maquina_virtual.vdi'
+  Espero a que muestre el resultados y comparo que sean iguales.
+
+Clono la maquina virtual y la ejecuto
+
+Desencripto la particion y accedo con la cuenta de usuario
+
+Obtengo la IP de la maquina
+  'hostname -I'
+
+Valido que el ssh este funcionando
+  'sudo service ssh status'
+
+Con la IP me conecto desde un Terminal con
+  'ssh nombre_usuario@direccion_ip_servidor -p 4242'
+  Ingreso password
+
+Setup:
+  Para validar que no hay entorno grafico se puede ejecutar
+    'systemctl status display-manager'
+    No debe aparecer ningun servicio como resultado
+
+  Validar que el Firewall UFW (Firewall Descomplicado) esta en uso
+    'sudo service ufw status'
+
+  Validar que el SSH esta en uso
+    'sudo service ssh status'
+
+  Validar el SO
+    'uname -a' o 'hostnamectl'
+
+  Validar que un usuario pertenece a un grupo
+    'getent group nombre_grupo'
+    El usuario debe estar en el listado
+
+
+Usuario:
+  Crear un nuevo usuario (se debe validar los elementos de seguridad de la contrasena)
+  'sudo adduser nombre_usuario'
+
+  En caso de desear eliminar un usuario
+  'sudo userdel -r nombre_usuario' -> -r (--remove): elimina directorio personal y su contenido
+
+  En caso de preguntas sobre la política de contraseñas fuerte
+    'vim /etc/login.defs' ->   en la seccion PASS_MAX_DAYS... Tiempo contrasena
+    Luego se instalo la lib libpam-pwquality
+    'vim etc/pam.d/common-password' -> Digitos y elementos de la contrasena
+    Recordar u:upper, d:digit, l:lower, difok:Al menos X caracteres que no sean parte de la anterior contrasena
+    Validar que usuario cumpla con los dias
+    'sudo chage -l nombre_usuario'
+    Si no cumple
+    'sudo chage -m/-M # nombre_usuario'
+    -m minimo de dias entre cambio de contrasena
+    -M Maximo de dias para cambio de contrasena
+  
+  Crear un nuevo grupo
+  'sudo addgroup nombre_grupo'
+
+  Si desea ver los grupos existentes y los usuarios en los grupos
+  'cat /etc/group'
+
+  Adicionar a usuario en un grupo
+  'sudo adduser nombre_usuario nombre_grupo'
+  Si desea validar que el usuario fua agregado al grupo
+  'getent group nombre_grupo'
+  
+  Si se desea eliminar a un usuario de un grupo
+  'sudo deluser nombre_usuario nombre_grupo'
+
+Servidor y particiones:
+	
