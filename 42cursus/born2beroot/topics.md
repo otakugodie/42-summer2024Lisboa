@@ -339,6 +339,7 @@ Usuario:
 
   Adicionar a usuario en un grupo
   'sudo adduser nombre_usuario nombre_grupo'
+
   Si desea validar que el usuario fua agregado al grupo
   'getent group nombre_grupo'
   
@@ -346,4 +347,83 @@ Usuario:
   'sudo deluser nombre_usuario nombre_grupo'
 
 Servidor y particiones:
+	Ver el nombre del servidor
+	'hostname'
+
+	Cambiar el nombre del servidor
+	'sudo hostnamectl set-hostname nuevo_nombre' y ajustar 'sudo vim /etc/hosts' la IP 127.0.0.1 con la del evaluador
+
+	Ver las particiones
+	'lsblk'
+
+	Validar instalacion de sudo
+	'which sudo' o 'dpkg -s sudo' o 'dpkg -l | grep sudo'
+
+	Adicionar usuarios a sudo
+	'sudo adduser nombre_usuario sudo' / 'sudo adduser nombre_usuario nombre_grupo'
+
+	Si desea validar que el usuario fua agregado al grupo
+  	'getent group nombre_grupo'
+
+	Ver las reglas para sudo
+	'vim /etc/sudoers.d/sudo_conf'
+
+	Mostrar existenca /var/log/sudo/ e historial de comandos sudo
+	Como root 'cd /var/log/sudo/' y ver historico: 'cat /var/log/sudo/sudo_conf'
+
+	Ejecutar un comando como sudo
+	'sudo touch hello42'
+
+	Mostrar actualización del historial de comandos sudo
+	'cat /var/log/sudo/sudo_conf'
+
+UFW / Firewall:
+	Comrpobar que UFW esta instalado y que funciona
+	'dpkg -s ufw' / 'sudo service ufw status'
+
+	Enumerar las reglas activas del Firewall
+	'sudo ufw status' / 'sudo ufw status numered'
+
+	Agregar una nueva regla para abrir un puerto
+	'sudo ufw allow ####'
+
+	Eliminar una regla del Firewall
+	'sudo ufw delete allow ####' o 'sudo ufw delete ##' (Para el caso 2 se debe tener la numeración)
+
+
+SSH:
+	Validar que ssh esta instalado
+	'sudo service ssh status'
+
+	Conectarse desde Terminal, probar con root al inicio (no debe permitir acceder)
+	'ssh nombre_usuario@ip_servidor_host -p ####'
+
+
+Script de monitoreo (cron):
+	Para cambiar el tiempo de ejecución del script
+	Usuario normal: 'crontab -e' o Usuario root: 'sudo crontab -e' o para otro usuario: 'sudo crontab -u nombre_usuario -e'
+
+	Ejemplo cron:
+	'*/5 * 1-15 4,5,6 3,4 sh /home' -> Se ejecuta cada 5 minutos, todos los días de la semana (*), del 1 hasta el 15 de abril (4), mayo(5) y junio(6), únicamente los miércoles (3) y jueves (4).
+
+	'8 14-18 1-15 4,5,6 3,4 sh /home' -> Se ejecuta a las 14:08, 15:08, 16:08, 17:08 y 18:08, entre el 1 y el 15 de abril, mayo y junio, únicamente los miércoles y jueves.
+
+	Detener/Activar el script sin modificar el cron
+	'sudo /etc/init.d/cron stop' / 'sudo /etc/init.d/cron start'
 	
+	Verificar el servicio
+	'sudo systemctl status cron'
+
+	Detener el servicio de cron
+	'sudo systemctl stop cron'
+	
+	Iniciar el servicio de cron,
+	'sudo systemctl start cron'
+	
+	Habilitarlo para que se inicie automáticamente al arrancar el sistema
+	'sudo systemctl enable cron'
+
+	Deshabilitar el servicio de cron, evitando que se inicie automáticamente después de un reinicio
+	'sudo systemctl disable cron'
+
+
