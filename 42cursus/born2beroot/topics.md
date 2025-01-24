@@ -414,16 +414,14 @@ Script de monitoreo (cron):
 	Verificar el servicio
 	'sudo systemctl status cron'
 
+	Deshabilitar el servicio de cron, evitando que se inicie automáticamente después de un reinicio
+	'sudo systemctl disable cron'
+	
+	Habilitarlo para que se inicie automáticamente al arrancar el sistema
+	'sudo systemctl enable cron'
+
 	Detener el servicio de cron
 	'sudo systemctl stop cron'
 	
 	Iniciar el servicio de cron,
 	'sudo systemctl start cron'
-	
-	Habilitarlo para que se inicie automáticamente al arrancar el sistema
-	'sudo systemctl enable cron'
-
-	Deshabilitar el servicio de cron, evitando que se inicie automáticamente después de un reinicio
-	'sudo systemctl disable cron'
-
-
