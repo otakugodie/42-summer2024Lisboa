@@ -1,41 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   sleeping.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/29 18:29:09 by diegfern          #+#    #+#             */
-/*   Updated: 2025/02/07 19:21:18 by diegfern         ###   ########.fr       */
+/*   Created: 2025/02/11 18:00:21 by diegfern          #+#    #+#             */
+/*   Updated: 2025/02/11 18:39:56 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <stdio.h>
+#include <unistd.h>
 
-void	*ft_memset(void *s, int c, size_t n)
-{
-	size_t			i;
-	unsigned char	*ptr;
-
-	i = 0;
-	ptr = (unsigned char *)s;
-	while (i < n)
-	{
-		ptr[i] = (unsigned char)c;
-		i++;
-	}
-	return (s);
-}
-
-/* #include <stdio.h>
+// unistd.h para usar sleep
 
 int	main(void)
 {
-	char	str[50] = "This is memset function";
-
-	printf("String is: %s\n", str);
-	ft_memset(str, '0', 5);
-	printf("String is: %s\n", str);
+	while (1)
+	{
+		printf("zzzzzzz\n");
+		sleep(2);
+	}
 	return (0);
 }
- */
