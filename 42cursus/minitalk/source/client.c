@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:06 by diegfern          #+#    #+#             */
-/*   Updated: 2025/05/23 07:26:20 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/05/24 18:05:04 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int main (int arg, char *argv[]){
 
 	int pid_server;
 
-	pid_server = 19886;
+	pid_server = 23823;
 
 	if (arg >= 3){
 		printf("PID process is: %s\n", argv[1]);
