@@ -6,13 +6,14 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/05/31 23:23:13 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/05/31 23:52:27 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "libft/libft.h"
 
 static int g_bit_count = 0; // Contador de bits recibidos
 static char g_char = 0;    // Carácter reconstruido
@@ -27,7 +28,7 @@ void ft_signalHandler (int sig){
 		g_char = (g_char << 1) | 1; // Desplaza y añade un 1
 	}
 	else {
-		printf("Signal ignored \n");
+		ft_printf("Signal ignored \n");
 	}
 	g_bit_count++;
 	if (g_bit_count == 8) { // Cuando se reciben 8 bits
@@ -40,7 +41,7 @@ void ft_signalHandler (int sig){
 
 int main (void){
 
-	printf("PID server is: %d \n", getpid());
+	ft_printf("PID server is: %d \n", getpid());
 
 	while (1){
 		int i;

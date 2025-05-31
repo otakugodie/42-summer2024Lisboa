@@ -6,13 +6,13 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:06 by diegfern          #+#    #+#             */
-/*   Updated: 2025/05/31 23:34:14 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/05/31 23:51:01 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <unistd.h>
-#include <stdio.h>
+//#include <stdio.h>
 //#include <stdlib.h>
 #include "libft/libft.h"
 
@@ -43,7 +43,7 @@ int main (int argc, char *argv[]){
     }
 
 	pid_server = ft_atoi(argv[1]);
-	ft_printf("Sending message to server...\n");
+	//ft_printf("Sending message to server...\n");
 	message = argv[2];
 
 	i = 0;
