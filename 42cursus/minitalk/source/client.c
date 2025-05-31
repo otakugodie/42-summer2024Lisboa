@@ -6,14 +6,15 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:06 by diegfern          #+#    #+#             */
-/*   Updated: 2025/05/30 21:51:38 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/05/31 23:34:14 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
+#include "libft/libft.h"
 
 void send_char_to_server(int pid_server, char c) {
     int bit;
@@ -41,7 +42,8 @@ int main (int argc, char *argv[]){
         return (1);
     }
 
-	pid_server = atoi(argv[1]);
+	pid_server = ft_atoi(argv[1]);
+	ft_printf("Sending message to server...\n");
 	message = argv[2];
 
 	i = 0;
@@ -51,8 +53,8 @@ int main (int argc, char *argv[]){
     }
 
 	/* if (argc >= 3){
-		printf("PID process is: %s\n", argv[1]);
-		printf("Message is: %s\n", argv[2]);
+		ft_printf ("PID process is: %s\n", argv[1]);
+		ft_printf ("Message is: %s\n", argv[2]);
 		while (1){
 			kill (pid_server, SIGUSR1);
 			sleep(2);
