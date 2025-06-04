@@ -6,7 +6,7 @@
 #    By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/02 19:29:35 by diegfern          #+#    #+#              #
-#    Updated: 2025/06/03 18:23:22 by diegfern         ###   ########.fr        #
+#    Updated: 2025/06/04 17:25:02 by diegfern         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,32 +37,32 @@ OBJ_SERVER = $(SRC_SERVER:.c=.o)
 all: $(LIBFT) $(NAME_CLIENT) $(NAME_SERVER)
 
 $(LIBFT):
-    @echo "Compiling libft..."
-    @$(MAKE) -C $(LIBFT_DIR)
+	@echo "Compiling libft..."
+	@$(MAKE) -C $(LIBFT_DIR)
 
 $(NAME_CLIENT): $(OBJ_CLIENT) $(LIBFT)
-    @echo "Compiling client..."
-    @$(CC) $(CFLAGS) $(OBJ_CLIENT) $(LIBFT) -o $(NAME_CLIENT)
-    @echo "Client executable created!"
+	@echo "Compiling client..."
+	@$(CC) $(CFLAGS) $(OBJ_CLIENT) $(LIBFT) -o $(NAME_CLIENT)
+	@echo "Client executable created!"
 
 $(NAME_SERVER): $(OBJ_SERVER) $(LIBFT)
-    @echo "Compiling server..."
-    @$(CC) $(CFLAGS) $(OBJ_SERVER) $(LIBFT) -o $(NAME_SERVER)
-    @echo "Server executable created!"
+	@echo "Compiling server..."
+	@$(CC) $(CFLAGS) $(OBJ_SERVER) $(LIBFT) -o $(NAME_SERVER)
+	@echo "Server executable created!"
 
 %.o: %.c
-    @echo "Compiling $<..."
-    @$(CC) $(CFLAGS) -I$(LIBFT_DIR) -c $< -o $@
+	@echo "Compiling $<..."
+	@$(CC) $(CFLAGS) -I$(LIBFT_DIR) -c $< -o $@
 
 clean:
-    @echo "Cleaning object files..."
-    @rm -f $(OBJ_CLIENT) $(OBJ_SERVER)
-    @$(MAKE) -C $(LIBFT_DIR) clean
+	@echo "Cleaning object files..."
+	@rm -f $(OBJ_CLIENT) $(OBJ_SERVER)
+	@$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-    @echo "Cleaning executables and libft..."
-    @rm -f $(NAME_CLIENT) $(NAME_SERVER)
-    @$(MAKE) -C $(LIBFT_DIR) fclean
+	@echo "Cleaning executables and libft..."
+	@rm -f $(NAME_CLIENT) $(NAME_SERVER)
+	@$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
