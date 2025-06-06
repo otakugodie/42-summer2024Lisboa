@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/06/05 20:57:14 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/06/06 22:40:05 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,21 @@
 #include <stdio.h>
 #include <unistd.h>
 
-static int	g_bit_count = 0;
-static char	g_char = 0;
+static int	g_bit_count = 0; // Contador de bits recibidos
+static char	g_char = 0;	// Carácter reconstruido
 
 void	ft_signal_handler(int sig)
 {
 	if (sig == SIGUSR1)
 	{
-		g_char = (g_char << 1) | 0;
+		// printf("Signal is: %d \n", sig);
+		g_char = (g_char << 1) | 0; // Desplaza y añade un 0
 		g_bit_count++;
 	}
 	else if (sig == SIGUSR2)
 	{
-		g_char = (g_char << 1) | 1;
+		// printf("Signal is: %d \n", sig);
+		g_char = (g_char << 1) | 1; // Desplaza y añade un 1
 		g_bit_count++;
 	}
 	else
@@ -39,16 +41,17 @@ void	ft_signal_handler(int sig)
 	{
 		if (g_char == '\0')
 		{
+			// Si el carácter es nulo, termina el mensaje
 			write(1, "\nMessage received successfully!\n", 32);
 			g_bit_count = 0;
 			g_char = 0;
 			return ;
 		}
-		write(1, &g_char, 1);
-		g_bit_count = 0;
-		g_char = 0;
+		// Cuando se reciben 8 bits
+		write(1, &g_char, 1); // Imprime el carácter reconstruido
+		g_bit_count = 0; // Reinicia el contador
+		g_char = 0; // Reinicia el carácter
 	}
-	return ;
 }
 
 int	main(void)
@@ -66,6 +69,7 @@ int	main(void)
 			if (i != SIGUSR1 && i != SIGUSR2 && i != SIGKILL && i != SIGSTOP
 				&& i != SIGINT)
 			{
+				// SIGINT la uso para terminar el proceso con Ctrl+C
 				signal(i, &ft_signal_handler);
 			}
 			i++;

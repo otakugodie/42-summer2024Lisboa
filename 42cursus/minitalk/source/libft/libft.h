@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:45:50 by diegfern          #+#    #+#             */
-/*   Updated: 2025/02/07 19:19:49 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/06/05 20:48:02 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,11 @@
 # define LIBFT_H
 
 # include <stdio.h>
-//# include <stddef.h>
 # include <string.h>
 # include <unistd.h>
-//# include <bsd/string.h>
-//# include <ctype.h>
 # include <stdint.h>
 # include <stdlib.h>
 # include <stdarg.h>
-
-
-// typedef unsigned long size_t;
 
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
@@ -60,8 +54,6 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
-
-
 int		ft_printf(const char *str, ...);
 void	ft_print_char(char c, long int *counter);
 void	ft_print_str(char *str, long int *counter);
@@ -70,7 +62,5 @@ void	ft_print_hex_upper(unsigned long int n, long int *counter);
 void	ft_print_hex_lower(unsigned long int n, long int *counter);
 void	ft_print_ptr(void *ptr, long int *counter);
 void	ft_parser_args(char type_arg, va_list *ap, long int *counter);
-
-
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 18:00:21 by diegfern          #+#    #+#             */
-/*   Updated: 2025/05/30 21:29:08 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/06/03 18:00:22 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,11 @@ void ft_signalHandler(int sig){
 		printf("Signal is: %d \n", sig);
 	}
 	else if(sig == SIGUSR2){
-		printf("Signal is: %d \n", sig);	
+		printf("Signal is: %d \n", sig);
 	}
 	else {
 		printf("Signal ignored \n");
 	}
-	
 }
 
 int main (void){
