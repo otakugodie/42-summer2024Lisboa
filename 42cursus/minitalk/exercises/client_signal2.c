@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 16:21:12 by diegfern          #+#    #+#             */
-/*   Updated: 2025/06/12 17:08:40 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/06/13 10:49:48 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,33 @@ int	ft_atoi(const char *nptr)
 
 void send_char_to_server (int pid, char c){
 	
-	/*Cifrar el mensaje por bits y enviarlo mediante SIGNALS SIGUSR1: 1 y SIGUSR2: 0*/
+	/*Cifrar el mensaje por bits y enviarlo mediante SIGNALS SIGUSR1: 0 y SIGUSR2: 1*/
 
-	printf ("Entro a SCS\n");	// Test
-	printf("[PID_SERVER] is: %d\n", pid);	//Test
-	printf("[Message] is: %c\n", c);	//Test
-	usleep(100);
+	//printf ("Entro a SCS\n");	// Test
+	//printf("[PID_SERVER] is: %d\n", pid);	//Test
+	int	bit;
+
+	//printf("[Message] is: %c\n", c);	//Test
+	bit = 7;
+	while ( bit >= 0 ){
+		if ((c >> bit) & 1 ){
+			kill(pid, SIGUSR2);	// Ddesplaza los bits del caracter i veces a la derecha y luego enmascara con 1, para validar si es un 1 o 0
+		} else {
+			kill(pid, SIGUSR1);
+		}
+		usleep(100);
+		bit--;
+	}
+
+	/*Envio senal basica para probar si funciona*/
+	//kill(pid, SIGUSR1);
 }
+
+/* void signal_handler (int sig){
+	if (sig == SIGUSR1){
+		write (1, "Message received from server!", 29);
+	}
+} */
 
 int main (int argc, char **argv){
 
@@ -63,16 +83,18 @@ int main (int argc, char **argv){
 
 	pid_server = ft_atoi(argv[1]);
 	
-	printf("Client PID is: %d\n", getpid());	//Test
-	printf("Arg[1] -> [PID_SERVER] is: %d\n", pid_server);	//Test	
+	//printf("Client PID is: %d\n", getpid());	//Test
+	//printf("Arg[1] -> [PID_SERVER] is: %d\n", pid_server);	//Test	
 
 	message = argv[2];
 	i = 0;
 
-	printf("Arg[2] -> [Message] is: %s\n", message);	//Test
+	//printf("Arg[2] -> [Message] is: %s\n", message);	//Test
 	
 	/*Manejo de señales cuando el servidor confirma la recepción del mensaje*/
+	//signal(SIGUSR1, signal_handler);
 
+	//kill(pid_server, SIGUSR1);
 	while (message[i]){
 		send_char_to_server (pid_server, message[i]);
 		i++;
