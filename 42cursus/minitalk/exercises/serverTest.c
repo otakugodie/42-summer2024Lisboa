@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   serverTest.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/06/14 11:29:23 by diegfern         ###   ########.fr       */
+/*   Created: 2025/06/12 13:06:22 by diegfern          #+#    #+#             */
+/*   Updated: 2025/06/14 10:38:23 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,28 +42,40 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 	static char	c;
 	static int	bit_count;
 
-	(void)ucontext;
+	(void)ucontext; // Silencia la advertencia del parámetro no usado
 	if (sig == SIGUSR1)
 	{
-		c = (c << 1) | 0;
+		c = (c << 1) | 0; // Agrego un bit 0
 	}
 	else if (sig == SIGUSR2)
 	{
-		c = (c << 1) | 1;
+		c = (c << 1) | 1; // Agrego un bit 1
 	}
 	bit_count++;
 	if (bit_count == 8)
 	{
 		if (c == '\0')
 		{
-			//write(1, "\n", 1);
+			write(1, "\n", 1);
+			//write(1, "\nEnd message!\n", 15);
 			kill((*info).si_pid, SIGUSR2);
+				// Confirmo al cliente la recepcion del mensaje
+											// c = 0;
+			// bit_count = 0;
+			// return ;
 		}
-		write(1, &c, 1);
+		else
+			write(1, &c, 1); // Escribo el carácter reconstruido
 		bit_count = 0;
 		c = 0;
 	}
 	kill((*info).si_pid, SIGUSR1);
+		// Handshake: Confirmo al cliente mediante su PID la recepcion de cada senal
+									// write(1, "Message received from: ", 23);
+	// ft_putnbr_fd(info->si_pid,1);
+	// ft_putnbr_fd((*info).si_pid, 1);
+	// write(1, "\n", 1);
+	// pause();
 }
 
 int	main(void)
@@ -73,11 +85,14 @@ int	main(void)
 	write(1, "Server PID is: ", 15);
 	ft_putnbr_fd(getpid(), 1);
 	write(1, "\n", 2);
-	sa.sa_flags = SA_SIGINFO;
-	sigemptyset(&sa.sa_mask);
+	/*Inicializo estructura de sigaction con el objeto sa (signal action)*/
+	sa.sa_flags = SA_SIGINFO; //
+	sigemptyset(&sa.sa_mask);        // Mascara de señales empieza vacía
 	sigaddset(&sa.sa_mask, SIGUSR1);
+		// Bloquea las senal SIGUSR1 mientras esté dentro del handler
 	sigaddset(&sa.sa_mask, SIGUSR2);
-	sa.sa_sigaction = signal_handler;
+		// Bloquea las senal SIGUSR2 mientras esté dentro del handler
+	sa.sa_sigaction = signal_handler; // Asigno el handler que usara
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
