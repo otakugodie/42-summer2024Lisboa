@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:06 by diegfern          #+#    #+#             */
-/*   Updated: 2025/06/21 14:23:03 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/06/23 16:52:22 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int	main(int argc, char **argv)
 	int		pid_server;
 	char	*message;
 	int		i;
+	int     timeout;
 
 	if (argc != 3)
 	{
@@ -101,8 +102,17 @@ int	main(int argc, char **argv)
 		i++;
 	}
 	send_char_to_server(pid_server, '\0');
+	timeout = 50000;
 	while (g_ack_received != 2)
-		pause();
+	{
+		//pause();
+		usleep(100);
+        if (--timeout == 0)
+        {
+            write(2, "Error: Final acknowledgment timeout\n", 36);
+            exit(1);
+        }
+	}
 	write(1, "Client finished successfully!\n", 30);
 	return (0);
 }
