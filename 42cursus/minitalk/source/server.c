@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/06/23 16:52:27 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/06/24 18:33:59 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,19 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 
 	(void)ucontext;
 	if (sig == SIGUSR1)
-	{
 		c = (c << 1) | 0;
-	}
 	else if (sig == SIGUSR2)
-	{
 		c = (c << 1) | 1;
-	}
 	bit_count++;
 	if (bit_count == 8)
 	{
 		if (c == '\0')
 		{
 			write(1, "\n", 1);
-            kill((*info).si_pid, SIGUSR2);
-            bit_count = 0;
-            c = 0;
-            return;
+			kill((*info).si_pid, SIGUSR2);
+			bit_count = 0;
+			c = 0;
+			return ;
 		}
 		write(1, &c, 1);
 		bit_count = 0;
@@ -78,8 +74,8 @@ int	main(void)
 	write(1, "\n", 2);
 	sa.sa_flags = SA_SIGINFO;
 	sigemptyset(&sa.sa_mask);
-	//sigaddset(&sa.sa_mask, SIGUSR1);
-	//sigaddset(&sa.sa_mask, SIGUSR2);
+	sigaddset(&sa.sa_mask, SIGUSR1);
+	sigaddset(&sa.sa_mask, SIGUSR2);
 	sa.sa_sigaction = signal_handler;
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);

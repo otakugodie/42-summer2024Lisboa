@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:06 by diegfern          #+#    #+#             */
-/*   Updated: 2025/06/23 16:52:22 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/06/24 18:22:51 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,25 +45,29 @@ int	ft_atoi(const char *nptr)
 void	send_char_to_server(int pid, char c)
 {
 	int	bit;
+	int	timeout;
 
 	bit = 7;
 	while (bit >= 0)
 	{
 		g_ack_received = 0;
+		timeout = 50000;
 		if ((c >> bit) & 1)
-		{
 			kill(pid, SIGUSR2);
-		}
 		else
-		{
 			kill(pid, SIGUSR1);
-		}
 		while (!g_ack_received)
-			pause();
+		{
+			usleep(100);
+			if (--timeout == 0)
+			{
+				write(2, "Error: Server timeout\n", 22);
+				exit(1);
+			}
+		}
 		bit--;
 	}
 }
-
 
 void	handshake_handler(int sig)
 {
@@ -83,7 +87,7 @@ int	main(int argc, char **argv)
 	int		pid_server;
 	char	*message;
 	int		i;
-	int     timeout;
+	int		timeout;
 
 	if (argc != 3)
 	{
@@ -105,13 +109,12 @@ int	main(int argc, char **argv)
 	timeout = 50000;
 	while (g_ack_received != 2)
 	{
-		//pause();
 		usleep(100);
-        if (--timeout == 0)
-        {
-            write(2, "Error: Final acknowledgment timeout\n", 36);
-            exit(1);
-        }
+		if (--timeout == 0)
+		{
+			write(2, "Error: Final acknowledgment timeout\n", 36);
+			exit(1);
+		}
 	}
 	write(1, "Client finished successfully!\n", 30);
 	return (0);
