@@ -1,5 +1,8 @@
 #include "mlx.h"
 #include "libft.h"
+#include <math.h>
+
+#define ISO_ANGLE 0.523599 // 30 grados en radianes
 
 void render (void *param){
 	//mlx_pixel_put(mlx, win, 200, 151, 0xFFFF00);
@@ -21,6 +24,47 @@ int	key_hook(int keycode, void *param)
     return (0);
 }
 
+void draw_iso_rect(void *mlx, void *win, int x0, int y0)
+{
+    int x[4] = {0, 120, 120, 0};
+    int y[4] = {0, 0, 100, 100};
+    int px[4], py[4];
+    int i;
+
+    // Proyectar cada punto a isométrico y trasladar al centro de la ventana
+    for (i = 0; i < 4; i++) {
+        px[i] = x0 + (int)((x[i] - y[i]) * cos(ISO_ANGLE));
+        py[i] = y0 + (int)((x[i] + y[i]) * sin(ISO_ANGLE));
+    }
+
+	
+
+    // Dibujar los 4 lados del rectángulo
+   
+   for (i = 0; i < 4; i++) {
+        int j = (i + 1) % 4;
+        int dx = px[j] - px[i];
+        int dy = py[j] - py[i];
+        int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+        float x_inc = dx / (float)steps;
+        float y_inc = dy / (float)steps;
+        float x_draw = px[i];
+        float y_draw = py[i];
+        for (int k = 0; k <= steps; k++) {
+            mlx_pixel_put(mlx, win, (int)x_draw, (int)y_draw, 0x00FFFF);
+            x_draw += x_inc;
+            y_draw += y_inc;
+        }
+    }
+
+	// Dibuja solo los 4 vértices
+    for (i = 0; i < 4; i++) {
+        mlx_pixel_put(mlx, win, px[i], py[i]-10, 0xFF0000); // Rojo, por ejemplo
+    }
+	
+
+}
+
 int main(void)
 {
     void *mlx;
@@ -36,6 +80,7 @@ int main(void)
 	//mlx_pixel_put(mlx, win, 200, 152, 0x0000FF);
 
 	//Dibuja linea horizontal
+	/* 
 	for (i = 0; i < 100; i++)
         mlx_pixel_put(mlx, win, 100 + i, 100, 0x0000FF);
 
@@ -55,9 +100,13 @@ int main(void)
 	mlx_pixel_put(mlx, win, 150, 150, 0xFFFFFF);
 	mlx_pixel_put(mlx, win, 300, 300, 0xFFFFFF);
 	
+	*/
+	
 	//mlx_pixel_put(mlx, win, 200, 151, 0xFFFF00);
 	//mlx_pixel_put(mlx, win, 200, 152, 0xFFFFFF);	//Blanco
 	//mlx_pixel_put(mlx, win, 200, 153, 0x000000);	//Negro
+
+	draw_iso_rect(mlx, win, 450, 300);
 
 	mlx_hook(win, 17, 0, close_window, NULL);      // Cerrar con la X
     mlx_hook(win, 2, 1L<<0, key_hook, NULL);       // Cerrar con ESC
