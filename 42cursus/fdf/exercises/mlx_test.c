@@ -2,7 +2,21 @@
 #include "libft.h"
 #include <math.h>
 
+void draw_iso_rect(void *mlx, void *win, int x0, int y0);
+
 #define ISO_ANGLE 0.523599 // 30 grados en radianes
+
+typedef struct s_vars {
+	void *mlx;
+	void *win;
+}	t_vars;
+
+int redraw(void *param)
+{
+	t_vars *vars = (t_vars *)param;
+	draw_iso_rect(vars->mlx, vars->win, 450, 300);
+	return (0);
+}
 
 void render (void *param){
 	//mlx_pixel_put(mlx, win, 200, 151, 0xFFFF00);
@@ -67,12 +81,15 @@ void draw_iso_rect(void *mlx, void *win, int x0, int y0)
 
 int main(void)
 {
-    void *mlx;
-    void *win;
+	t_vars vars;
+	void *mlx;
+	void *win;
 	int i;
 
-    mlx = mlx_init();
-	win = mlx_new_window(mlx, 950, 540, "Hello world!");
+    //mlx = mlx_init();
+	//win = mlx_new_window(mlx, 950, 540, "Hello world!");
+	vars.mlx = mlx_init(); // ¡Inicializa aquí!
+	vars.win = mlx_new_window(vars.mlx, 950, 540, "Hello world!");
 	
 	
 	//mlx_pixel_put(mlx, win, 200, 150, 0xFF0000);
@@ -106,11 +123,20 @@ int main(void)
 	//mlx_pixel_put(mlx, win, 200, 152, 0xFFFFFF);	//Blanco
 	//mlx_pixel_put(mlx, win, 200, 153, 0x000000);	//Negro
 
-	draw_iso_rect(mlx, win, 450, 300);
+	//draw_iso_rect(mlx, win, 450, 300);
+	draw_iso_rect(vars.mlx, vars.win, 450, 300);
 
-	mlx_hook(win, 17, 0, close_window, NULL);      // Cerrar con la X
-    mlx_hook(win, 2, 1L<<0, key_hook, NULL);       // Cerrar con ESC
+    mlx_hook(vars.win, 17, 0, close_window, NULL);      // Cerrar con la X
+    mlx_hook(vars.win, 2, 1L<<0, key_hook, NULL);       // Cerrar con ESC
 
-    mlx_loop(mlx);
+
+	//mlx_hook(win, 17, 0, close_window, NULL);      // Cerrar con la X
+    //mlx_hook(win, 2, 1L<<0, key_hook, NULL);       // Cerrar con ESC
+
+	mlx_expose_hook(vars.win, redraw, &vars);           // Redibujar al exponer ventana
+
+    mlx_loop(vars.mlx);
+
+    //mlx_loop(mlx);
     return (0);
 }
