@@ -1,5 +1,5 @@
 #include "mlx.h"
-#include "libft.h"
+#include "libft/libft.h"
 #include <math.h>
 
 void draw_iso_rect(void *mlx, void *win, int x0, int y0);
