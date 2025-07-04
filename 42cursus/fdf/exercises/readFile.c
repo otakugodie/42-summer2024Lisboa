@@ -2,6 +2,8 @@
 #include "libft/libft.h"
 #include <math.h>
 
+#define	DEFAULT_COLOR	0xFFFFFF
+
 typedef struct s_map
 {
 	int	x;
@@ -44,68 +46,97 @@ t_map **allocate_map (int height, int width){
 int fill_map (const char *filename, t_map **map, int height, int width){
 	char *line;
 	char **split;
+	char *z_sep;
 	int fd;
-	int i;
-	int j;
-
-	//printf("\nNumero de filas es: %d\n", height);
-	//printf("Numero de columnas es: %d\n", width);
+	int x;
+	int y;
+	int count;
 
 	fd = open(filename, O_RDONLY);
+
 	if (fd < 0)
 	{
 		perror("Error opening file in fill_map");
 		return -1;
 	}
-
+	y = 0;
 	while ((line = get_next_line(fd)) != NULL)
+	{
+		//printf("\nLine:  %s", line);
+		split = ft_split(line, ' ');
+		
+		/* Cuento el # de elementos del split para validar que hay suficientes columnas según el width que debería tener*/
+		count = 0;
+		while (split[count])
+			count++;
+		if (count > width)
 		{
-			printf("\nLine:  %s", line);
-			split = ft_split(line, ' ');
-			
-			i = 0;
-			printf("Split: ");
-			while (split[i]){
-				printf("%s ", split[i]);
-				i++;
-			}
-
-
-			/* 
-			height++;
-			if (height == 1){
-				split = ft_split(line, ' ');
-				while (split[width])
-					width++;
-				clear_var(split);
-			}
-			printf("%s", line);
+			// Muestro mensaje de error
+			//***************************************************************************************/
+			//* Ver como terminar mejor el error */
+			fprintf(stderr, "Error: La línea %d tiene más columnas (%d) que el ancho esperado (%d)\n", y + 1, count, width);
+			// Libero memoria de split y line
+			for (x = 0; split[x]; x++)
+				free(split[x]);
+			free(split);
 			free(line);
-			 */
+			// Libero el mapa si es necesario
+			// for (int k = 0; k < y; k++) free(map[k]);
+			// free(map);
+			close(fd);
+			// Terminar el programa con error
+			exit(EXIT_FAILURE); // o return -1;
 		}
-		//printf("\nNumero de filas es: %d\n", height);
-		//printf("Numero de columnas es: %d\n", width);
+		else {
+			x = 0;
+			printf("Split: ");
+			while (split[x] && x < width){
+				map[y][x].x = x;
+				map[y][x].y = y;
+				if (!ft_strchr(split[x], ',') ){
+					//printf("%s ", split[x]);
+					map[y][x].z = ft_atoi(split[x]);
+					map[y][x].color = DEFAULT_COLOR;
+					free(split[x]);
+					x++;
+				}
+				else {
+					// Si encuentra la ',' en el elemento, separar z y color
+					z_sep = ft_strchr(split[x], ',');
+					*z_sep = '\0'; // Termina el string en la coma para obtener solo z
+					map[y][x].z = ft_atoi(split[x]);
+					// Si el color empieza con "0x", usa ft_atoi_base; si no, se convierte con ft_atoi en base 10 o se ignora
+					if (*(z_sep + 1) == '0' && (*(z_sep + 2) == 'x' || *(z_sep + 2) == 'X'))
+						map[y][x].color = ft_atoi_base(z_sep + 1);
+					else
+						map[y][x].color = ft_atoi(z_sep + 1); // Si no tiene el formato con 0x o 0X solo lo convierte a decimal
+					free(split[x]);
+					x++;
+				}
+			}
+			x = 0;
+			y++;
+			free (split);
+			free(line);
+		}
+	}
+	close(fd);
+	printf("\n");
+	return (0);
+}
 
-		//map = allocate_map (height, width);	//No olvidar que luego se debe liberar la memoria del map
-		close(fd);
-		printf("\n");
-
-} 
-
-int main(int argc, char **argv)
+int main (int argc, char **argv)
 {
 	char *line;
 	char	**split;
 	int fd;
-
 	int height;
 	int width;
 	t_map **map;
 	int i;
 
 	// Si se pasa un archivo como argumento, abrirlo
-	if (argc > 1)
-	{
+	if (argc > 1){
 		fd = open(argv[1], O_RDONLY);
 		if (fd < 0)
 		{
@@ -135,117 +166,17 @@ int main(int argc, char **argv)
 		//printf("\n");
 
 		if (fill_map(argv[1], map, height, width) == 0){
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					printf("(%d, %d): z=%d color=%#X\t", x, y, map[y][x].z, map[y][x].color);
+				}
+				printf("\n\n");
+			}
 			printf ("Llenado exitoso\n");
 		}
-
 		return 0;
-	}
-	else
-	{
-		// Test lectura desde stdin
+	}else {
 		printf("\nReading from stdin (press Ctrl+D to end):\n");
 	}
-
-    return 0;
+	
 }
-
-/*
-
-typedef struct s_map
-{
-	int		**values;
-	int		width;
-	int		height;
-}	t_map;
-
-t_map	*read_map(const char *filename)
-{
-	int		fd = open(filename, O_RDONLY);
-	char	*line;
-	char	**split;
-	int		i, j;
-	t_map	*map = malloc(sizeof(t_map));
-	int		**values = NULL;
-	int		height = 0, width = 0;
-
-	// Primer pasada: contar height y width
-	while ((line = get_next_line(fd)))
-	{
-		height++;
-		if (height == 1)
-		{
-			split = ft_split(line, ' ');
-			while (split[width])
-				width++;
-			// liberar split
-			for (i = 0; split[i]; i++)
-				free(split[i]);
-			free(split);
-		}
-		free(line);
-	}
-	close(fd);
-
-	// Reservar memoria para el array 2D
-	values = malloc(sizeof(int *) * height);
-	for (i = 0; i < height; i++)
-		values[i] = malloc(sizeof(int) * width);
-
-	// Segunda pasada: guardar los valores
-	fd = open(filename, O_RDONLY);
-	i = 0;
-	while ((line = get_next_line(fd)))
-	{
-		split = ft_split(line, ' ');
-		for (j = 0; j < width; j++)
-			values[i][j] = ft_atoi(split[j]);
-		for (j = 0; split[j]; j++)
-			free(split[j]);
-		free(split);
-		free(line);
-		i++;
-	}
-	close(fd);
-
-	map->values = values;
-	map->width = width;
-	map->height = height;
-	return map;
-}
-
-int main(void)
-{
-	t_map *map = read_map("42.fdf");
-	// Aquí puedes usar map->values, map->width y map->height
-
-	// Liberar memoria
-	for (int i = 0; i < map->height; i++)
-		free(map->values[i]);
-	free(map->values);
-	free(map);
-
-	return 0;
-}
-
-
-
-// Reservar memoria para el mapa (array 2D de t_map)
-t_map **map;
-int i;
-
-map = malloc(sizeof(t_map *) * height);
-for (i = 0; i < height; i++)
-	map[i] = malloc(sizeof(t_map) * width);
-
-// Ahora tienes map[y][x] para acceder a cada punto
-
-for (int y = 0; y < height; y++)
-{
-	for (int x = 0; x < width; x++)
-	{
-		printf("Punto (%d, %d): z=%d, color=%#x\n",
-			map[y][x].x, map[y][x].y, map[y][x].z, map[y][x].color);
-	}
-}
-
-*/
