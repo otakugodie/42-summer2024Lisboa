@@ -80,6 +80,7 @@ int fill_map (const char *filename, t_map **map, int height, int width){
 				free(split[x]);
 			free(split);
 			free(line);
+
 			// Libero el mapa si es necesario
 			// for (int k = 0; k < y; k++) free(map[k]);
 			// free(map);
@@ -93,15 +94,17 @@ int fill_map (const char *filename, t_map **map, int height, int width){
 			while (split[x] && x < width){
 				map[y][x].x = x;
 				map[y][x].y = y;
+				// Si no encuentra la ',' en el elemento, almacena la z y deja el color por defecto
 				if (!ft_strchr(split[x], ',') ){
 					//printf("%s ", split[x]);
 					map[y][x].z = ft_atoi(split[x]);
 					map[y][x].color = DEFAULT_COLOR;
+					//Luego de almacenar el valor en map limpia el elemento de split
 					free(split[x]);
 					x++;
 				}
 				else {
-					// Si encuentra la ',' en el elemento, separar z y color
+					// Si encuentra la ',' en el elemento, separo la z del color
 					z_sep = ft_strchr(split[x], ',');
 					*z_sep = '\0'; // Termina el string en la coma para obtener solo z
 					map[y][x].z = ft_atoi(split[x]);
@@ -110,6 +113,7 @@ int fill_map (const char *filename, t_map **map, int height, int width){
 						map[y][x].color = ft_atoi_base(z_sep + 1);
 					else
 						map[y][x].color = ft_atoi(z_sep + 1); // Si no tiene el formato con 0x o 0X solo lo convierte a decimal
+					//Luego de almacenar el valor en map limpia el elemento de split
 					free(split[x]);
 					x++;
 				}
