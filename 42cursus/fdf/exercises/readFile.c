@@ -164,7 +164,6 @@ int main (int argc, char **argv)
 		}
 		//printf("\nNumero de filas es: %d\n", height);
 		//printf("Numero de columnas es: %d\n", width);
-
 		map = allocate_map (height, width);	//No olvidar que luego se debe liberar la memoria del map
 		close(fd);
 		//printf("\n");
@@ -178,9 +177,11 @@ int main (int argc, char **argv)
 			}
 			printf ("Llenado exitoso\n");
 		}
+
+		//Llamo funcion para calcular las posiciones isometricas, no olvidar ajustar la estructura para poder ajustar el zoom, el offset (posicion del grafico).
+
 		return 0;
 	}else {
 		printf("\nReading from stdin (press Ctrl+D to end):\n");
 	}
-	
 }
