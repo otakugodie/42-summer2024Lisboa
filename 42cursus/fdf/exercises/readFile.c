@@ -11,7 +11,32 @@ typedef struct s_map
 	int	z;
 	unsigned int color;
 
+	int screen_x;
+	int screen_y;
+
 } t_map ;
+
+typedef struct s_projection
+{
+	float zoom;			// Factor de escala (1.0 = tamaño normal)
+	int offset_x;		// Desplazamiento horizontal
+	int offset_y;		// Desplazamiento vertical
+	float elevation;	// Factor de elevación para z (1.0 = normal)
+} t_projection;
+
+int	close_window(void *param)
+{
+    (void)param;
+    exit(0);
+    return (0);
+}
+
+int	key_hook(int keycode, void *param)
+{
+    if (keycode == 65307) // ESC en Linux
+        exit(0);
+    return (0);
+}
 
 
 char	*clear_var(char **str)
@@ -43,7 +68,7 @@ t_map **allocate_map (int height, int width){
 
 }
 
-int fill_map (const char *filename, t_map **map, int height, int width){
+int	fill_map (const char *filename, t_map **map, int height, int width){
 	char *line;
 	char **split;
 	char *z_sep;
@@ -90,7 +115,7 @@ int fill_map (const char *filename, t_map **map, int height, int width){
 		}
 		else {
 			x = 0;
-			printf("Split: ");
+			//printf("Split: ");
 			while (split[x] && x < width){
 				map[y][x].x = x;
 				map[y][x].y = y;
@@ -129,6 +154,67 @@ int fill_map (const char *filename, t_map **map, int height, int width){
 	return (0);
 }
 
+//Recorre el map para calcular los screen_x y los screen_y correspondientes a cada relacion x,y,z para convertirlos a 2D isometricos
+int	isometric_projection (t_map **map, int height, int width, t_projection *projection)
+{
+	int x;
+	int y;
+	double angle_radians; 
+	angle_radians = (30 * M_PI) / 180.0;
+	y = 0;
+	while (y < height)
+	{
+		x = 0;
+		while (x < width)
+		{
+			map[y][x].screen_x = (((map[y][x].x - map[y][x].y) * cos(angle_radians)) *  projection->zoom ) + projection->offset_x;
+
+			map[y][x].screen_y = (((map[y][x].x + map[y][x].y) * sin(angle_radians) - map[y][x].z * projection->elevation) * projection->zoom) + projection->offset_y;
+			x++;
+		}
+		y++;
+	}
+	return (0);
+}
+
+void test_draw_points(t_map **map, int height, int width)
+{
+    void *mlx;
+    void *win;
+    int x, y;
+    
+    // Inicializar MLX y crear ventana
+    mlx = mlx_init();
+    win = mlx_new_window(mlx, 1000, 600, "FdF - Test Points");
+    
+    // Recorrer el mapa y dibujar cada punto
+    y = 0;
+    while (y < height)
+    {
+        x = 0;
+        while (x < width)
+        {
+            // Dibujar el punto en las coordenadas calculadas
+            mlx_pixel_put(mlx, win, map[y][x].screen_x, map[y][x].screen_y, map[y][x].color);
+            
+            // Opcional: dibujar un punto más grande (3x3 píxeles)
+            mlx_pixel_put(mlx, win, map[y][x].screen_x + 1, map[y][x].screen_y, map[y][x].color);
+            mlx_pixel_put(mlx, win, map[y][x].screen_x, map[y][x].screen_y + 1, map[y][x].color);
+            mlx_pixel_put(mlx, win, map[y][x].screen_x + 1, map[y][x].screen_y + 1, map[y][x].color);
+            
+            x++;
+        }
+        y++;
+    }
+    
+    // Hooks básicos para cerrar
+    mlx_hook(win, 17, 0, close_window, NULL);      // Cerrar con X
+    mlx_hook(win, 2, 1L<<0, key_hook, NULL);       // Cerrar con ESC
+    
+    // Mostrar ventana
+    mlx_loop(mlx);
+}
+
 int main (int argc, char **argv)
 {
 	char *line;
@@ -138,6 +224,7 @@ int main (int argc, char **argv)
 	int width;
 	t_map **map;
 	int i;
+	t_projection projection;
 
 	// Si se pasa un archivo como argumento, abrirlo
 	if (argc > 1){
@@ -171,14 +258,23 @@ int main (int argc, char **argv)
 		if (fill_map(argv[1], map, height, width) == 0){
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
-					printf("(%d, %d): z=%d color=%#X\t", x, y, map[y][x].z, map[y][x].color);
+					//printf("(%d, %d): z=%d color=%#X\t", x, y, map[y][x].z, map[y][x].color);
 				}
-				printf("\n\n");
+				//printf("\n\n");
 			}
 			printf ("Llenado exitoso\n");
 		}
 
-		//Llamo funcion para calcular las posiciones isometricas, no olvidar ajustar la estructura para poder ajustar el zoom, el offset (posicion del grafico).
+		//Llamo funcion para calcular las posiciones isometricas
+		projection.zoom = 20.0;
+		projection.offset_x = 400;
+		projection.offset_y = 300;
+		projection.elevation = 1.0; // zoom, offset_x, offset_y, elevation
+
+		if ( isometric_projection(map, height, width, &projection) == 0){
+			printf ("Coordenadas isometricas OK\n");
+			test_draw_points(map, height, width);
+		}
 
 		return 0;
 	}else {
