@@ -26,16 +26,16 @@ typedef struct s_projection
 
 int	close_window(void *param)
 {
-    (void)param;
-    exit(0);
-    return (0);
+	(void)param;
+	exit(0);
+	return (0);
 }
 
 int	key_hook(int keycode, void *param)
 {
-    if (keycode == 65307) // ESC en Linux
-        exit(0);
-    return (0);
+	if (keycode == 65307) // ESC en Linux
+		exit(0);
+	return (0);
 }
 
 
@@ -179,40 +179,38 @@ int	isometric_projection (t_map **map, int height, int width, t_projection *proj
 
 void test_draw_points(t_map **map, int height, int width)
 {
-    void *mlx;
-    void *win;
-    int x, y;
-    
-    // Inicializar MLX y crear ventana
-    mlx = mlx_init();
-    win = mlx_new_window(mlx, 1000, 600, "FdF - Test Points");
-    
-    // Recorrer el mapa y dibujar cada punto
-    y = 0;
-    while (y < height)
-    {
-        x = 0;
-        while (x < width)
-        {
-            // Dibujar el punto en las coordenadas calculadas
-            mlx_pixel_put(mlx, win, map[y][x].screen_x, map[y][x].screen_y, map[y][x].color);
-            
-            // Opcional: dibujar un punto más grande (3x3 píxeles)
-            mlx_pixel_put(mlx, win, map[y][x].screen_x + 1, map[y][x].screen_y, map[y][x].color);
-            mlx_pixel_put(mlx, win, map[y][x].screen_x, map[y][x].screen_y + 1, map[y][x].color);
-            mlx_pixel_put(mlx, win, map[y][x].screen_x + 1, map[y][x].screen_y + 1, map[y][x].color);
-            
-            x++;
-        }
-        y++;
-    }
-    
-    // Hooks básicos para cerrar
-    mlx_hook(win, 17, 0, close_window, NULL);      // Cerrar con X
-    mlx_hook(win, 2, 1L<<0, key_hook, NULL);       // Cerrar con ESC
-    
-    // Mostrar ventana
-    mlx_loop(mlx);
+	void *mlx;
+	void *win;
+	int x, y;
+	// Inicializar MLX y crear ventana
+	mlx = mlx_init();
+	win = mlx_new_window(mlx, 1000, 600, "FdF - Test Points");
+	// Recorrer el mapa y dibujar cada punto
+	y = 0;
+	while (y < height)
+	{
+		x = 0;
+		while (x < width)
+		{
+			// Dibujar el punto en las coordenadas calculadas
+			mlx_pixel_put(mlx, win, map[y][x].screen_x, 	map[y][x].screen_y, 	map[y][x].color);
+			
+			// Opcional: dibujar un punto más grande (3x3 píxeles)
+			mlx_pixel_put(mlx, win, map[y][x].screen_x + 1, map[y][x].screen_y,     map[y][x].color);
+			mlx_pixel_put(mlx, win, map[y][x].screen_x,     map[y][x].screen_y + 1, map[y][x].color);
+			mlx_pixel_put(mlx, win, map[y][x].screen_x + 1, map[y][x].screen_y + 1, map[y][x].color);
+			
+			x++;
+		}
+		y++;
+	}
+
+	// Hooks básicos para cerrar
+	mlx_hook(win, 17, 0, close_window, NULL);      // Cerrar con X
+	mlx_hook(win, 2, 1L<<0, key_hook, NULL);       // Cerrar con ESC
+
+	// Mostrar ventana
+	mlx_loop(mlx);
 }
 
 int main (int argc, char **argv)
@@ -234,7 +232,6 @@ int main (int argc, char **argv)
 			perror("Error opening file");
 			return 1;
 		}
-		
 		height = 0;
 		width = 0;
 		while ((line = get_next_line(fd)) != NULL)
@@ -262,9 +259,8 @@ int main (int argc, char **argv)
 				}
 				//printf("\n\n");
 			}
-			printf ("Llenado exitoso\n");
+			//printf ("Llenado exitoso\n");
 		}
-
 		//Llamo funcion para calcular las posiciones isometricas
 		projection.zoom = 20.0;
 		projection.offset_x = 400;
