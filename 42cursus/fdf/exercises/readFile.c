@@ -105,7 +105,6 @@ int	fill_map (const char *filename, t_map **map, int height, int width){
 				free(split[x]);
 			free(split);
 			free(line);
-
 			// Libero el mapa si es necesario
 			// for (int k = 0; k < y; k++) free(map[k]);
 			// free(map);
