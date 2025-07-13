@@ -3,8 +3,8 @@
 #include <math.h>
 
 #define	DEFAULT_COLOR	0xFFFFFF
-#define WINDOW_WIDTH  1280
-#define WINDOW_HEIGHT 720
+#define WINDOW_WIDTH  800
+#define WINDOW_HEIGHT 600
 #define WINDOW_TITLE  "FdF - diegfern"
 
 typedef struct s_map
@@ -36,6 +36,11 @@ typedef struct s_vars {
     t_projection	projection;
 }	t_vars;
 
+// Declaraciones de funciones
+void draw_map_points(t_vars *vars);
+int redraw(void *param);
+void free_map(t_map **map, int height);
+
 int	close_window(void *param)
 {
 	(void)param;
@@ -56,14 +61,46 @@ int	key_hook(int keycode, void *param)
 
 	if (keycode == 65307) // ESC en Linux
 		exit(0);
-	else if (keycode == 61) // Tecla + (zoom in)
+	else if (keycode == 61 || keycode == 43 || keycode == 65451) // Tecla + (zoom in)
+	{
 		vars->projection.zoom *= 1.1;
-	else if (keycode == 45) // Tecla - (zoom out)
+		redraw(vars); // Redibujar con nuevo zoom
+	}
+	else if (keycode == 45 || keycode == 95 || keycode == 65453) // Tecla - (zoom out)
+	{
 		vars->projection.zoom *= 0.9;
+		redraw(vars); // Redibujar con nuevo zoom
+	}
+	else if (keycode == 122) // Tecla 'z' para zoom in
+	{
+		vars->projection.zoom *= 1.1;
+		redraw(vars);
+	}
+	else if (keycode == 120) // Tecla 'x' para zoom out
+	{
+		vars->projection.zoom *= 0.9;
+		redraw(vars);
+	}
 	else if (keycode == 65362) // Flecha arriba
+	{
 		vars->projection.offset_y -= 10;
+		redraw(vars); // Redibujar con nuevo offset
+	}
 	else if (keycode == 65364) // Flecha abajo
+	{
 		vars->projection.offset_y += 10;
+		redraw(vars); // Redibujar con nuevo offset
+	}
+	else if (keycode == 65361) // Flecha izquierda
+	{
+		vars->projection.offset_x -= 10;
+		redraw(vars);
+	}
+	else if (keycode == 65363) // Flecha derecha
+	{
+		vars->projection.offset_x += 10;
+		redraw(vars);
+	}
 	return (0);
 }
 
@@ -222,8 +259,8 @@ float calculate_auto_zoom(int width, int height, int window_width, int window_he
 void calculate_window_size(int width, int height, int *window_width, int *window_height)
 {
 	// Tamaño mínimo
-	int min_width = 800;
-	int min_height = 600;
+	int min_width = WINDOW_WIDTH;
+	int min_height = WINDOW_HEIGHT;
 
 	// Calculo tamaño basado en el mapa
 	int recommended_width = (width + height) * 20 + 200; // 200 de margen
@@ -235,14 +272,49 @@ void calculate_window_size(int width, int height, int *window_width, int *window
 
 void test_draw_points(t_vars *vars)
 {
-	//void *mlx;
-	//void *win;
+	// Dibujar el mapa usando la función modularizada
+	draw_map_points(vars);
+
+	// Hooks básicos para cerrar
+	mlx_hook(vars->win, 17, 0, close_window, vars);      // Cerrar con X
+	mlx_hook(vars->win, 2, 1L<<0, key_hook, vars);       // Teclas
+	mlx_expose_hook(vars->win, redraw, vars);             // Hook de redraw
+
+	// Mostrar ventana
+	mlx_loop(vars->mlx);
+}
+
+void free_map(t_map **map, int height)
+{
+	int i;
+
+	if (!map)
+		return;
+	
+	// Liberar cada fila
+	i = 0;
+	while (i < height)
+	{
+		if (map[i])
+		{
+			free(map[i]);
+			map[i] = NULL;
+		}
+		i++;
+	}
+	
+	// Liberar el array principal de punteros
+	free(map);
+}
+
+// Función para dibujar solo los puntos del mapa (sin hooks ni inicialización MLX)
+void draw_map_points(t_vars *vars)
+{
 	int x, y;
-	// Inicializar MLX y crear ventana
-	//mlx = mlx_init();
-	vars->mlx = mlx_init();
-	vars->win = mlx_new_window(vars->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
-	//win = mlx_new_window(mlx, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
+
+	// Limpiar la ventana
+	mlx_clear_window(vars->mlx, vars->win);
+	
 	// Recorrer el mapa y dibujar cada punto
 	y = 0;
 	while (y < vars->height)
@@ -251,24 +323,31 @@ void test_draw_points(t_vars *vars)
 		while (x < vars->width)
 		{
 			// Dibujar el punto en las coordenadas calculadas
-			mlx_pixel_put(vars->mlx, vars->win, vars->map[y][x].screen_x, 	vars->map[y][x].screen_y, 	vars->map[y][x].color);
+			mlx_pixel_put(vars->mlx, vars->win, vars->map[y][x].screen_x, vars->map[y][x].screen_y, vars->map[y][x].color);
 			
 			// Opcional: dibujar un punto más grande (3x3 píxeles)
-			mlx_pixel_put(vars->mlx, vars->win, vars->map[y][x].screen_x + 1, vars->map[y][x].screen_y,     vars->map[y][x].color);
-			mlx_pixel_put(vars->mlx, vars->win, vars->map[y][x].screen_x,     vars->map[y][x].screen_y + 1, vars->map[y][x].color);
+			mlx_pixel_put(vars->mlx, vars->win, vars->map[y][x].screen_x + 1, vars->map[y][x].screen_y, vars->map[y][x].color);
+			mlx_pixel_put(vars->mlx, vars->win, vars->map[y][x].screen_x, vars->map[y][x].screen_y + 1, vars->map[y][x].color);
 			mlx_pixel_put(vars->mlx, vars->win, vars->map[y][x].screen_x + 1, vars->map[y][x].screen_y + 1, vars->map[y][x].color);
 			
 			x++;
 		}
 		y++;
 	}
+}
 
-	// Hooks básicos para cerrar
-	mlx_hook(vars->win, 17, 0, close_window, vars);      // Cerrar con X
-	mlx_hook(vars->win, 2, 1L<<0, key_hook, vars);       // Cerrar con ESC
-
-	// Mostrar ventana
-	mlx_loop(vars->mlx);
+// Hook de redraw que se ejecuta cuando la ventana necesita ser redibujada
+int redraw(void *param)
+{
+	t_vars *vars = (t_vars *)param;
+	
+	// Recalcular proyección con parámetros actuales
+	isometric_projection(vars->map, vars->height, vars->width, &vars->projection);
+	
+	// Redibujar el mapa
+	draw_map_points(vars);
+	
+	return (0);
 }
 
 int main (int argc, char **argv)
@@ -327,17 +406,15 @@ int main (int argc, char **argv)
 
 			// Inicializo estructura t_vars para MLX
 			t_vars vars;
-			
+
 			vars.mlx = mlx_init();
 			if (!vars.mlx)
 			{
 				printf("Error: No se pudo inicializar MLX\n");
-				
-				//Hay que crear funcion para liberar el mapa
-				//free_map(map, height);
+				free_map(map, height);
 				return 1;
 			}
-			
+
 			// Calculo tamaño de ventana y zoom automático
 			int win_width;
 			int win_height;
@@ -348,8 +425,8 @@ int main (int argc, char **argv)
 			// Actualizo proyección con zoom automático y centro en ventana
 			projection.zoom = auto_zoom;
 			
-			projection.offset_x = win_width / 1.5;
-			projection.offset_y = win_height / 2;
+			projection.offset_x = win_width / 2.5;
+			projection.offset_y = win_height / 2.5;
 
 			projection.elevation = 0.5; // zoom, offset_x, offset_y, elevation
 			
@@ -360,8 +437,7 @@ int main (int argc, char **argv)
 			if (!vars.win)
 			{
 				printf("Error: No se pudo crear la ventana\n");
-				//Hay que crear funcion para liberar el mapa
-				//free_map(map, height);
+				free_map(map, height);
 				return 1;
 			}
 			
@@ -371,14 +447,8 @@ int main (int argc, char **argv)
 			vars.width = width;
 			vars.projection = projection;
 			
-			// Dibujar puntos
+			// Dibujar puntos y configurar hooks
 			test_draw_points(&vars);
-			
-			// Configurar hooks básicos
-			mlx_key_hook(vars.win, key_hook, &vars);
-			
-			// Iniciar bucle de eventos
-			mlx_loop(vars.mlx);
 		}
 
 		return 0;
