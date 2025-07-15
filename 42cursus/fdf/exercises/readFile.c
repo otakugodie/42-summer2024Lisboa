@@ -540,7 +540,7 @@ void render_map(t_vars *vars)
 {
 	clear_window(vars);
 	draw_wireframe(vars);
-	draw_map_points(vars);
+	//draw_map_points(vars);
 }
 
 // Hook de redraw que se ejecuta cuando la ventana necesita ser redibujada, Recalculando la proyección con parámetros actuales y luego redibuja
