@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   readFile.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/16 19:29:15 by diegfern          #+#    #+#             */
+/*   Updated: 2025/07/16 19:29:33 by diegfern         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mlx.h"
 #include "libft/libft.h"
 #include <math.h>
@@ -127,18 +139,12 @@ int	fill_map (const char *filename, t_map **map, int height, int width)
 	y = 0;
 	while ((line = get_next_line(fd)) != NULL)
 	{
-		//printf("\nLine:  %s", line);
 		split = ft_split(line, ' ');
-		
-		/* Cuento el # de elementos del split para validar que hay suficientes columnas según el width que debería tener*/
 		count = 0;
 		while (split[count])
 			count++;
 		if (count > width)
 		{
-			// Muestro mensaje de error
-			//***************************************************************************************/
-			//* Ver como terminar mejor el error */
 			fprintf(stderr, "Error: La línea %d tiene más columnas (%d) que el ancho esperado (%d)\n", y + 1, count, width);
 			// Libero memoria de split y line
 			for (x = 0; split[x]; x++)
@@ -146,25 +152,19 @@ int	fill_map (const char *filename, t_map **map, int height, int width)
 			free(split);
 			free(line);
 
-			// Libero el mapa si es necesario
-			// for (int k = 0; k < y; k++) free(map[k]);
-			// free(map);
 			close(fd);
-			// Terminar el programa con error
+
 			exit(EXIT_FAILURE); // o return -1;
 		}
 		else {
 			x = 0;
-			//printf("Split: ");
 			while (split[x] && x < width){
 				map[y][x].x = x;
 				map[y][x].y = y;
 				// Si no encuentra la ',' en el elemento, almacena la z y deja el color por defecto
 				if (!ft_strchr(split[x], ',') ){
-					//printf("%s ", split[x]);
 					map[y][x].z = ft_atoi(split[x]);
 					map[y][x].color = DEFAULT_COLOR;
-					//Luego de almacenar el valor en map limpia el elemento de split
 					free(split[x]);
 					x++;
 				}
