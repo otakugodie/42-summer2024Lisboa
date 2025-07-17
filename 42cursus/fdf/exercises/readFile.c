@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 19:29:15 by diegfern          #+#    #+#             */
-/*   Updated: 2025/07/16 19:29:33 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:59:22 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,25 @@ int redraw(void *param);
 void free_map(t_map **map, int height);
 void setup_hooks(t_vars *vars);
 void clear_window(t_vars *vars);
-void launch_fdf(t_vars *vars);
 void draw_line(t_vars *vars, t_map point1, t_map point2);
 void draw_wireframe(t_vars *vars);
 void draw_map_points(t_vars *vars);
+int open_map_file(const char *filename);
+
+//Procesamiento para llenar el maps (fill_map)
+static int process_line_data(char **split, t_map *map_row, int width, int y);
+static int validate_line_width(char **split, int expected_width, int line_num);
+static void parse_point_value(char *element, t_map *point, int x, int y);
+static int process_map_file(int fd, t_map **map, int width);
+
+void cleanup_line_resources(char **split, char *line);
+void cleanup_split_array(char **split);
+
+//Funciones para la refactorizacion de main ()
+static int parse_map_dimensions(const char *filename, int *height, int *width);
+static int initialize_mlx_system(t_vars *vars, t_map **map, int height);
+static int setup_window_and_projection(t_vars *vars, int width, int height, t_projection *projection);
+static void launch_fdf(t_vars *vars);
 
 int	close_window(void *param)
 {
@@ -102,6 +117,19 @@ char	*clear_var(char **str)
 	}
 	return (NULL);
 }
+/*Funcion para apertura segura de archivos*/
+int open_map_file(const char *filename)
+{
+	int fd;
+
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+	{
+		perror("Error opening file");
+		return (-1);
+	}
+	return (fd);
+}
 
 /*Crea y reserva memoria para una matriz bidimensional de estructuras t_map de tamaño height x width. Primero asigna memoria para un array de punteros (filas), luego para cada fila asigna memoria para width estructuras t_map (columnas).*/
 t_map **allocate_map (int height, int width)
@@ -119,79 +147,108 @@ t_map **allocate_map (int height, int width)
 }
 
 
-int	fill_map (const char *filename, t_map **map, int height, int width)
+/*Procesa todos los puntos/elementos de una línea del archivo y los convierte en estructuras t_map con sus coordenadas (x,y,z) y color.*/
+static int process_line_data(char **split, t_map *map_row, int width, int y)
+{
+	int x;
+
+	x = 0;
+	while (split[x] && x < width)
+	{
+		parse_point_value(split[x], &map_row[x], x, y);
+		x++;
+	}
+	return (0);
+}
+/*Cuenta elementos en el array split, valida que no exceda el ancho esperado y en caso de error, libera memoria y termina el programa*/
+static int validate_line_width(char **split, int expected_width, int line_num)
+{
+	int count;
+	int x;
+
+	count = 0;
+	while (split[count])
+		count++;
+
+	if (count > expected_width)
+	{
+		fprintf(stderr, "Error: La línea %d tiene más columnas (%d) que el ancho esperado (%d)\n", 
+			line_num, count, expected_width);
+
+		cleanup_split_array(split);
+		exit(EXIT_FAILURE);
+	}
+	return (0);
+}
+
+/*Libera memoria del array split (cada string individual y el array), libera memoria de la línea leída y maneja casos donde split o line puedan ser NULL*/
+void cleanup_line_resources(char **split, char *line)
+{
+	cleanup_split_array(split);
+	if (line)
+		free(line);
+}
+/* toma un elemento individual del archivo (como un string) y lo convierte en datos estructurados, sea un numero o numero con , y el código del color (0x)*/
+static void parse_point_value(char *element, t_map *point, int x, int y)
+{
+	char *z_sep;
+	point->x = x;
+	point->y = y;
+	if (!ft_strchr(element, ','))
+	{
+		point->z = ft_atoi(element);
+		point->color = DEFAULT_COLOR;
+	}
+	else
+	{
+		z_sep = ft_strchr(element, ',');
+		*z_sep = '\0';
+		point->z = ft_atoi(element);
+		if (*(z_sep + 1) == '0' && (*(z_sep + 2) == 'x' || *(z_sep + 2) == 'X'))
+			point->color = ft_atoi_base(z_sep + 1);
+		else
+			point->color = ft_atoi(z_sep + 1);
+	}
+}
+/*Bucle principal de procesamiento*/
+static int process_map_file(int fd, t_map **map, int width)
 {
 	char *line;
 	char **split;
-	char *z_sep;
-	int fd;
-	int x;
 	int y;
-	int count;
+	int result;
 
-	fd = open(filename, O_RDONLY);
-
-	if (fd < 0)
-	{
-		perror("Error opening file in fill_map");
-		return -1;
-	}
 	y = 0;
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		split = ft_split(line, ' ');
-		count = 0;
-		while (split[count])
-			count++;
-		if (count > width)
+		if (validate_line_width(split, width, y + 1) != 0)
 		{
-			fprintf(stderr, "Error: La línea %d tiene más columnas (%d) que el ancho esperado (%d)\n", y + 1, count, width);
-			// Libero memoria de split y line
-			for (x = 0; split[x]; x++)
-				free(split[x]);
-			free(split);
-			free(line);
-
-			close(fd);
-
-			exit(EXIT_FAILURE); // o return -1;
+			cleanup_line_resources(split, line);
+			return (-1);
 		}
-		else {
-			x = 0;
-			while (split[x] && x < width){
-				map[y][x].x = x;
-				map[y][x].y = y;
-				// Si no encuentra la ',' en el elemento, almacena la z y deja el color por defecto
-				if (!ft_strchr(split[x], ',') ){
-					map[y][x].z = ft_atoi(split[x]);
-					map[y][x].color = DEFAULT_COLOR;
-					free(split[x]);
-					x++;
-				}
-				else {
-					// Si encuentra la ',' en el elemento, separo la z del color
-					z_sep = ft_strchr(split[x], ',');
-					*z_sep = '\0'; // Termina el string en la coma para obtener solo z
-					map[y][x].z = ft_atoi(split[x]);
-					// Si el color empieza con "0x", usa ft_atoi_base; si no, se convierte con ft_atoi en base 10 o se ignora
-					if (*(z_sep + 1) == '0' && (*(z_sep + 2) == 'x' || *(z_sep + 2) == 'X'))
-						map[y][x].color = ft_atoi_base(z_sep + 1);
-					else
-						map[y][x].color = ft_atoi(z_sep + 1); // Si no tiene el formato con 0x o 0X solo lo convierte a decimal
-					//Luego de almacenar el valor en map limpia el elemento de split
-					free(split[x]);
-					x++;
-				}
-			}
-			x = 0;
-			y++;
-			free (split);
-			free(line);
-		}
+		result = process_line_data(split, map[y], width, y);
+		cleanup_line_resources(split, line);
+		if (result != 0)
+			return (-1);
+		y++;
 	}
-	close(fd);
-	printf("\n");
 	return (0);
+}
+/*Función principal que lee un archivo de mapa y llena la matriz bidimensional*/
+int fill_map(const char *filename, t_map **map, int height, int width)
+{
+    int fd;
+    int result;
+    
+    fd = open_map_file(filename);
+    if (fd < 0)
+        return (-1);
+    
+    result = process_map_file(fd, map, width);
+    close(fd);
+    
+    return (result);
 }
 
 /*Recorre el map para calcular los screen_x y los screen_y correspondientes a cada relacion x,y,z para convertirlos a 2D isometricos*/
@@ -305,7 +362,7 @@ void clear_window(t_vars *vars)
 Lanza la aplicación FdF iniciando el renderizado y la interactividad.
 Dibuja el mapa inicial, configura los hooks de eventos y entra en el loop principal de MLX, manteniendo la ventana activa hasta que el usuario la cierre.
 */
-void launch_fdf(t_vars *vars)
+static void launch_fdf(t_vars *vars)
 {
 	render_map(vars);
 	setup_hooks(vars);
@@ -554,107 +611,117 @@ int redraw(void *param)
 	return (0);
 }
 
-int main (int argc, char **argv)
+/*Lee un archivo para determinar las dimensiones del mapa (alto y ancho)*/
+static int parse_map_dimensions(const char *filename, int *height, int *width)
 {
 	char *line;
-	char	**split;
+	char **split;
 	int fd;
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+	{
+		perror("Error opening file");
+		return (-1);
+	}
+	*height = 0;
+	*width = 0;
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		(*height)++;
+		if (*height == 1)
+		{
+			split = ft_split(line, ' ');
+			while (split[*width])
+				(*width)++;
+			cleanup_split_array(split);
+		}
+		free(line);
+	}
+	close(fd);
+	return (0);
+}
+
+/*Inicializa el sistema MLX y configura la estructura base*/
+static int initialize_mlx_system(t_vars *vars, t_map **map, int height)
+{
+	vars->mlx = mlx_init();
+	if (!vars->mlx)
+	{
+		write(2, "Error: No se pudo inicializar MLX\n", 34);
+		free_map(map, height);
+		return (-1);
+	}
+	return (0);
+}
+
+/*Configura ventana, proyección y parámetros gráficos*/
+static int setup_window_and_projection(t_vars *vars, int width, int height, t_projection *projection)
+{
+	int win_width;
+	int win_height;
+	float auto_zoom;
+
+	calculate_window_size(width, height, &win_width, &win_height);
+	auto_zoom = calculate_auto_zoom(width, height, win_width, win_height);
+
+	projection->zoom = auto_zoom;
+	projection->offset_x = win_width / 2.5;
+	projection->offset_y = win_height / 2.5;
+	projection->elevation = 0.5;
+
+	isometric_projection(vars->map, vars->height, vars->width, projection);
+
+	vars->win = mlx_new_window(vars->mlx, win_width, win_height, WINDOW_TITLE);
+	if (!vars->win)
+	{
+		write(2, "Error: No se pudo crear la ventana\n", 35);
+		free_map(vars->map, vars->height);
+		return (-1);
+	}
+	return (0);
+}
+
+/*Libera memoria de un array de strings (como el resultado de ft_split)*/
+void cleanup_split_array(char **split)
+{
+	int i;
+
+	if (!split)
+		return;
+
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
+}
+
+int main(int argc, char **argv)
+{
 	int height;
 	int width;
 	t_map **map;
-	int i;
 	t_projection projection;
+	t_vars vars;
 
-	// Si se pasa un archivo como argumento, abrirlo
-	if (argc > 1){
-		fd = open(argv[1], O_RDONLY);
-		if (fd < 0)
-		{
-			perror("Error opening file");
-			return 1;
-		}
-		height = 0;
-		width = 0;
-		while ((line = get_next_line(fd)) != NULL)
-		{
-			height++;
-			if (height == 1){
-				split = ft_split(line, ' ');
-				while (split[width])
-					width++;
-				clear_var(split);
-			}
-			//printf("%s", line);
-			free(line);
-		}
-		//printf("\nNumero de filas es: %d\n", height);
-		//printf("Numero de columnas es: %d\n", width);
-		map = allocate_map (height, width);	//No olvidar que luego se debe liberar la memoria del map
-		close(fd);
-		//printf("\n");
-
-		if (fill_map(argv[1], map, height, width) == 0){
-			for (int y = 0; y < height; y++) {
-				for (int x = 0; x < width; x++) {
-					//printf("(%d, %d): z=%d color=%#X\t", x, y, map[y][x].z, map[y][x].color);
-				}
-				//printf("\n\n");
-			}
-			//printf ("Llenado exitoso\n");
-		}
-		//Llamo funcion para calcular las posiciones isometricas
-		if ( isometric_projection(map, height, width, &projection) == 0){
-			//printf ("Coordenadas isometricas OK\n");
-
-			// Inicializo estructura t_vars para MLX
-			t_vars vars;
-
-			vars.mlx = mlx_init();
-			if (!vars.mlx)
-			{
-				printf("Error: No se pudo inicializar MLX\n");
-				free_map(map, height);
-				return 1;
-			}
-
-			// Calculo tamaño de ventana y zoom automático
-			int win_width;
-			int win_height;
-			
-			calculate_window_size(width, height, &win_width, &win_height);
-			float auto_zoom = calculate_auto_zoom(width, height, win_width, win_height);
-			
-			// Actualizo proyección con zoom automático y centro en ventana
-			projection.zoom = auto_zoom;
-			
-			projection.offset_x = win_width / 2.5;
-			projection.offset_y = win_height / 2.5;
-
-			projection.elevation = 0.5; // zoom, offset_x, offset_y, elevation
-			
-			// Recalculo proyección con nuevos parámetros
-			isometric_projection(map, height, width, &projection);
-			
-			vars.win = mlx_new_window(vars.mlx, win_width, win_height, WINDOW_TITLE);
-			if (!vars.win)
-			{
-				printf("Error: No se pudo crear la ventana\n");
-				free_map(map, height);
-				return 1;
-			}
-			
-			// Asigno datos del mapa y proyección a vars
-			vars.map = map;
-			vars.height = height;
-			vars.width = width;
-			vars.projection = projection;
-			
-			// Dibujar puntos y configurar hooks
-			launch_fdf(&vars);
-		}
-
-		return 0;
-	}else {
-		printf("\nReading from stdin (press Ctrl+D to end):\n");
-	}
+	if (argc <= 1)
+		return (write(1, "Usage: ./fdf <map_file>\n", 24), 1);
+	if (parse_map_dimensions(argv[1], &height, &width) != 0)
+		return (1);
+	map = allocate_map(height, width);
+	if (fill_map(argv[1], map, height, width) != 0)
+		return (free_map(map, height), 1);
+	if (initialize_mlx_system(&vars, map, height) != 0)
+		return (1);
+	vars.map = map;
+	vars.height = height;
+	vars.width = width;
+	vars.projection = projection;
+	if (setup_window_and_projection(&vars, width, height, &projection) != 0)
+		return (1);
+	vars.projection = projection;
+	launch_fdf(&vars);
+	return (0);
 }
