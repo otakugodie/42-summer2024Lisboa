@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 19:29:15 by diegfern          #+#    #+#             */
-/*   Updated: 2025/07/17 21:59:22 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/07/19 17:58:52 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,22 @@ typedef struct s_vars {
     t_projection	projection;
 }	t_vars;
 
+typedef struct s_bresenham {
+    int dx;
+    int dy;
+    int sx;
+    int sy;
+    int err;
+    int total_distance;
+} t_bresenham;
+
+// Estructura para posición actual para dibujar la linea
+typedef struct s_line_pos {
+    int x;
+    int y;
+    int current_distance;
+} t_line_pos;
+
 // Declaraciones de funciones
 void render_map(t_vars *vars);
 int redraw(void *param);
@@ -69,14 +85,26 @@ static int validate_line_width(char **split, int expected_width, int line_num);
 static void parse_point_value(char *element, t_map *point, int x, int y);
 static int process_map_file(int fd, t_map **map, int width);
 
+//Funciones de limpieza
 void cleanup_line_resources(char **split, char *line);
 void cleanup_split_array(char **split);
 
-//Funciones para la refactorizacion de main ()
+//Funciones para la refactorizacion de main
 static int parse_map_dimensions(const char *filename, int *height, int *width);
 static int initialize_mlx_system(t_vars *vars, t_map **map, int height);
 static int setup_window_and_projection(t_vars *vars, int width, int height, t_projection *projection);
 static void launch_fdf(t_vars *vars);
+
+
+/*Funciones para trazar la linea (draw_line) con algoritmo de Bresenham*/
+static void init_bresenham(t_map p1, t_map p2, t_bresenham *vars_bres);
+static void init_line_position(t_map point, t_line_pos *pos);
+static unsigned int get_interp_color(unsigned int c1, unsigned int c2, int current_dist, int total_dist);
+static void update_position(t_bresenham *vars_bres, t_line_pos *pos);
+
+
+
+
 
 int	close_window(void *param)
 {
@@ -459,7 +487,78 @@ static int absolute_value(int value)
 	return (value < 0) ? -value : value;
 }
 
+//Funciones para dibujar linea
+static void init_bresenham(t_map p1, t_map p2, t_bresenham *vars_bres)
+{
+	vars_bres->dx = absolute_value(p2.screen_x - p1.screen_x);
+	vars_bres->dy = absolute_value(p2.screen_y - p1.screen_y);
+	vars_bres->sx = (p1.screen_x < p2.screen_x) ? 1 : -1;
+	vars_bres->sy = (p1.screen_y < p2.screen_y) ? 1 : -1;
+	vars_bres->err = vars_bres->dx - vars_bres->dy;
+	vars_bres->total_distance = vars_bres->dx + vars_bres->dy;
+}
+
+static void init_line_position(t_map point, t_line_pos *pos)
+{
+	pos->x = point.screen_x;
+	pos->y = point.screen_y;
+	pos->current_distance = 0;
+}
+
+/*Calcul el color interpolado*/
+static unsigned int get_interp_color(unsigned int c1, unsigned int c2, int current_dist, int total_dist)
+	{
+	float t;
+
+	if (total_dist > 0)
+		t = (float)current_dist / (float)total_dist;
+	else
+		t = 0.0;
+	return (interpolate_color(c1, c2, t));
+}
+
+static void update_position(t_bresenham *vars_bres, t_line_pos *pos)
+{
+	int e2;
+
+	e2 = 2 * vars_bres->err;
+	if (e2 > -vars_bres->dy)
+	{
+		vars_bres->err -= vars_bres->dy;
+		pos->x += vars_bres->sx;
+		pos->current_distance++;
+	}
+	if (e2 < vars_bres->dx)
+	{
+		vars_bres->err += vars_bres->dx;
+		pos->y += vars_bres->sy;
+		pos->current_distance++;
+	}
+}
+
 // Función para dibujar una línea entre dos puntos usando el algoritmo de Bresenham con interpolación de color
+void draw_line(t_vars *vars, t_map point1, t_map point2)
+{
+	t_bresenham vars_bres;
+	t_line_pos pos;
+	unsigned int cur_color;
+
+	init_bresenham(point1, point2, &vars_bres);
+	init_line_position(point1, &pos);
+
+	while (1)
+	{
+		cur_color = get_interp_color(point1.color, point2.color, pos.current_distance, vars_bres.total_distance);
+		mlx_pixel_put(vars->mlx, vars->win, pos.x, pos.y, cur_color);
+		
+		if (pos.x == point2.screen_x && pos.y == point2.screen_y)
+			break;
+			
+		update_position(&vars_bres, &pos);
+	}
+}
+
+/* 
 void draw_line(t_vars *vars, t_map point1, t_map point2)
 {
 	int dx;
@@ -467,13 +566,16 @@ void draw_line(t_vars *vars, t_map point1, t_map point2)
 	int sx;
 	int sy;
 	int err;
+	int total_distance;
+
 	int e2;
 	int x0;
 	int y0;
 	int x1;
 	int y1;
-	unsigned int color1, color2, current_color;
-	int total_distance;
+	unsigned int color1;
+	unsigned int color2;
+	unsigned int current_color;
 	int current_distance;
 	float t;
 
@@ -538,7 +640,8 @@ void draw_line(t_vars *vars, t_map point1, t_map point2)
 			current_distance++;
 		}
 	}
-}
+} 
+*/
 
 // Función para dibujar el wireframe completo del mapa
 void draw_wireframe(t_vars *vars)
