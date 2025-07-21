@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 19:29:15 by diegfern          #+#    #+#             */
-/*   Updated: 2025/07/19 17:58:52 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/07/20 14:28:24 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,14 @@ typedef struct s_line_pos {
     int current_distance;
 } t_line_pos;
 
-// Declaraciones de funciones
+//Estructura para RGB
+typedef struct s_rgb {
+    int r;
+    int g;
+    int b;
+} t_rgb;
+
+// Prototipos de funciones
 void render_map(t_vars *vars);
 int redraw(void *param);
 void free_map(t_map **map, int height);
@@ -82,7 +89,7 @@ int open_map_file(const char *filename);
 //Procesamiento para llenar el maps (fill_map)
 static int process_line_data(char **split, t_map *map_row, int width, int y);
 static int validate_line_width(char **split, int expected_width, int line_num);
-static void parse_point_value(char *element, t_map *point, int x, int y);
+void parse_point_value(char *element, t_map *point, int x, int y);
 static int process_map_file(int fd, t_map **map, int width);
 
 //Funciones de limpieza
@@ -102,8 +109,10 @@ static void init_line_position(t_map point, t_line_pos *pos);
 static unsigned int get_interp_color(unsigned int c1, unsigned int c2, int current_dist, int total_dist);
 static void update_position(t_bresenham *vars_bres, t_line_pos *pos);
 
-
-
+//Funciones para la extrapolacion de colores
+static unsigned int interp_color(unsigned int color1, unsigned int color2, float t);
+static void extract_rgb_comp(unsigned int color, t_rgb *rgb);
+static void interp_rgb_comp(t_rgb rgb1, t_rgb rgb2, float t, t_rgb *result);
 
 
 int	close_window(void *param)
@@ -167,7 +176,8 @@ t_map **allocate_map (int height, int width)
 
 	map = malloc (sizeof(t_map *) * height);
 	i = 0;
-	while (i < height){
+	while (i < height)
+	{
 		map[i] = malloc (sizeof(t_map) * width);
 		i++;
 	}
@@ -192,7 +202,6 @@ static int process_line_data(char **split, t_map *map_row, int width, int y)
 static int validate_line_width(char **split, int expected_width, int line_num)
 {
 	int count;
-	int x;
 
 	count = 0;
 	while (split[count])
@@ -200,9 +209,13 @@ static int validate_line_width(char **split, int expected_width, int line_num)
 
 	if (count > expected_width)
 	{
-		fprintf(stderr, "Error: La línea %d tiene más columnas (%d) que el ancho esperado (%d)\n", 
-			line_num, count, expected_width);
-
+		write(2, "Error: Line ", 12);
+		ft_putnbr_fd(line_num, 2);
+		write(2, " has ", 5);
+		ft_putnbr_fd(count, 2);
+		write(2, " columns, expected ", 18);
+		ft_putnbr_fd(expected_width, 2);
+		write(2, "\n", 1);
 		cleanup_split_array(split);
 		exit(EXIT_FAILURE);
 	}
@@ -217,7 +230,7 @@ void cleanup_line_resources(char **split, char *line)
 		free(line);
 }
 /* toma un elemento individual del archivo (como un string) y lo convierte en datos estructurados, sea un numero o numero con , y el código del color (0x)*/
-static void parse_point_value(char *element, t_map *point, int x, int y)
+void parse_point_value(char *element, t_map *point, int x, int y)
 {
 	char *z_sep;
 	point->x = x;
@@ -264,7 +277,7 @@ static int process_map_file(int fd, t_map **map, int width)
 	return (0);
 }
 /*Función principal que lee un archivo de mapa y llena la matriz bidimensional*/
-int fill_map(const char *filename, t_map **map, int height, int width)
+int fill_map(const char *filename, t_map **map, int width)
 {
     int fd;
     int result;
@@ -292,7 +305,7 @@ int	isometric_projection (t_map **map, int height, int width, t_projection *proj
 		x = 0;
 		while (x < width)
 		{
-			map[y][x].screen_x = (((map[y][x].x - map[y][x].y) * cos(angle_radians)) *  projection->zoom ) + projection->offset_x;
+			map[y][x].screen_x = (((map[y][x].x - map[y][x].y) * cos(angle_radians)) *  projection->zoom) + projection->offset_x;
 
 			map[y][x].screen_y = (((map[y][x].x + map[y][x].y) * sin(angle_radians) - map[y][x].z * projection->elevation) * projection->zoom) + projection->offset_y;
 			x++;
@@ -429,34 +442,39 @@ static int lerp_int(int start, int end, float t)
 	return (start + (int)((end - start) * t));
 }
 
-// Interpolación del color entre dos colores
-static unsigned int interpolate_color(unsigned int color1, unsigned int color2, float t)
+/*Funcion para interpolar RGB*/
+static void extract_rgb_comp(unsigned int color, t_rgb *rgb)
 {
-	int r1, g1, b1;
-	int r2, g2, b2;
-	int r, g, b;
+	rgb->r = get_red(color);
+	rgb->g = get_green(color);
+	rgb->b = get_blue(color);
+}
 
-	// Si t está fuera del rango [0,1], usa colores extremos
+/*Funcion Interpolar RGB*/
+static void interp_rgb_comp(t_rgb rgb1, t_rgb rgb2, float t, t_rgb *result)
+{
+	result->r = lerp_int(rgb1.r, rgb2.r, t);
+	result->g = lerp_int(rgb1.g, rgb2.g, t);
+	result->b = lerp_int(rgb1.b, rgb2.b, t);
+}
+
+// Interpolación del color entre dos colores
+static unsigned int interp_color(unsigned int color1, unsigned int color2, float t)
+{
+	t_rgb rgb1;
+	t_rgb rgb2;
+	t_rgb result;
+
 	if (t <= 0.0)
 		return (color1);
 	if (t >= 1.0)
 		return (color2);
 
-	// Extrae componentes del primer color y segundo color
-	r1 = get_red(color1);
-	g1 = get_green(color1);
-	b1 = get_blue(color1);
+	extract_rgb_comp(color1, &rgb1);
+	extract_rgb_comp(color2, &rgb2);
+	interp_rgb_comp(rgb1, rgb2, t, &result);
 
-	r2 = get_red(color2);
-	g2 = get_green(color2);
-	b2 = get_blue(color2);
-
-	// Interpola cada componente
-	r = lerp_int(r1, r2, t);
-	g = lerp_int(g1, g2, t);
-	b = lerp_int(b1, b2, t);
-
-	return (create_color(r, g, b));
+	return (create_color(result.r, result.g, result.b));
 }
 
 // Función auxiliar para dibujar un punto grueso
@@ -507,14 +525,14 @@ static void init_line_position(t_map point, t_line_pos *pos)
 
 /*Calcul el color interpolado*/
 static unsigned int get_interp_color(unsigned int c1, unsigned int c2, int current_dist, int total_dist)
-	{
+{
 	float t;
 
 	if (total_dist > 0)
 		t = (float)current_dist / (float)total_dist;
 	else
 		t = 0.0;
-	return (interpolate_color(c1, c2, t));
+	return (interp_color(c1, c2, t));
 }
 
 static void update_position(t_bresenham *vars_bres, t_line_pos *pos)
@@ -557,91 +575,6 @@ void draw_line(t_vars *vars, t_map point1, t_map point2)
 		update_position(&vars_bres, &pos);
 	}
 }
-
-/* 
-void draw_line(t_vars *vars, t_map point1, t_map point2)
-{
-	int dx;
-	int dy;
-	int sx;
-	int sy;
-	int err;
-	int total_distance;
-
-	int e2;
-	int x0;
-	int y0;
-	int x1;
-	int y1;
-	unsigned int color1;
-	unsigned int color2;
-	unsigned int current_color;
-	int current_distance;
-	float t;
-
-	// Coordenadas de inicio y fin
-	x0 = point1.screen_x;
-	y0 = point1.screen_y;
-	x1 = point2.screen_x;
-	y1 = point2.screen_y;
-
-	// Colores de inicio y fin
-	color1 = point1.color;
-	color2 = point2.color;
-
-	// Calcular diferencias
-	dx = absolute_value(x1 - x0);
-	dy = absolute_value(y1 - y0);
-
-	// Calcular distancia total para interpolación
-	total_distance = dx + dy;
-
-	// Determinar dirección del incremento
-	sx = (x0 < x1) ? 1 : -1;
-	sy = (y0 < y1) ? 1 : -1;
-
-	// Error inicial
-	err = dx - dy;
-	current_distance = 0;
-
-	// Dibujar la línea punto por punto
-	while (1)
-	{
-		// Calcular factor de interpolación (t entre 0.0 y 1.0)
-		if (total_distance > 0)
-			t = (float)current_distance / (float)total_distance;
-		else
-			t = 0.0;
-
-		// Interpolar color
-		current_color = interpolate_color(color1, color2, t);
-
-		// Dibujar el punto actual con color interpolado
-		mlx_pixel_put(vars->mlx, vars->win, x0, y0, current_color);
-
-		// Si llegamos al punto final, terminar
-		if (x0 == x1 && y0 == y1)
-			break;
-
-		// Calcular el siguiente punto usando Bresenham
-		e2 = 2 * err;
-
-		if (e2 > -dy)
-		{
-			err -= dy;
-			x0 += sx;
-			current_distance++;
-		}
-
-		if (e2 < dx)
-		{
-			err += dx;
-			y0 += sy;
-			current_distance++;
-		}
-	}
-} 
-*/
 
 // Función para dibujar el wireframe completo del mapa
 void draw_wireframe(t_vars *vars)
@@ -814,7 +747,7 @@ int main(int argc, char **argv)
 	if (parse_map_dimensions(argv[1], &height, &width) != 0)
 		return (1);
 	map = allocate_map(height, width);
-	if (fill_map(argv[1], map, height, width) != 0)
+	if (fill_map(argv[1], map, width) != 0)
 		return (free_map(map, height), 1);
 	if (initialize_mlx_system(&vars, map, height) != 0)
 		return (1);
