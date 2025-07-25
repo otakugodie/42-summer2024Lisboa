@@ -6,7 +6,10 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:37:19 by diegfern          #+#    #+#             */
-/*   Updated: 2025/07/21 18:37:20 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/07/25 21:56:37 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// [#, &siguiente_nodo]
+
+//Radix algorithm
