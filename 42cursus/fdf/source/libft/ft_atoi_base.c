@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi_base.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: diegfern <diegfern@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 08:49:33 by diegfern          #+#    #+#             */
-/*   Updated: 2025/07/04 08:49:54 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/10 10:12:54 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_atoi_base(char *line) {
+int	ft_atoi_base(char *line)
+{
 	int		result;
 	char	c;
 

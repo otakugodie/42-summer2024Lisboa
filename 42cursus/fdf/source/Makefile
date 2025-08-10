@@ -6,7 +6,7 @@
 #    By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/24 21:13:39 by diegfern          #+#    #+#              #
-#    Updated: 2025/07/20 17:19:34 by diegfern         ###   ########.fr        #
+#    Updated: 2025/08/10 16:08:52 by diegfern         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ CFLAGS = -Wall -Wextra -Werror
 # Directorios
 SRCDIR = .
 LIBFTDIR = libft
+#MLXDIR = ./minilibx-linux
 MLXDIR = ../../../minilibx
 
 # Archivos fuente
@@ -29,6 +30,11 @@ SRCS = $(SRCDIR)/main.c \
         $(SRCDIR)/map_parser.c \
         $(SRCDIR)/projections.c \
         $(SRCDIR)/utils.c \
+        $(SRCDIR)/bresenham_utils.c \
+		$(SRCDIR)/memory_utils.c \
+		$(SRCDIR)/parsing_utils.c \
+		$(SRCDIR)/color_utils.c \
+
 
 # Archivos objeto
 OBJS = $(SRCS:.c=.o)

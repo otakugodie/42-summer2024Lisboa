@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: diegfern <diegfern@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 14:17:12 by diegfern          #+#    #+#             */
-/*   Updated: 2025/07/20 17:06:38 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/10 13:25:41 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 /*
 Libera la memoria de una matriz bidimensional de estructuras t_map.
- Primero libera cada fila individualmente, luego el array principal de punteros, evitando memory leaks 
+ Primero libera cada fila individualmente, luego el array principal de punteros,
+	evitando memory leaks
  al finalizar el programa o en caso de error.
 */
-void free_map(t_map **map, int height)
+void	free_map(t_map **map, int height)
 {
-	int i;
+	int	i;
 
 	if (!map)
-		return;
-
+		return ;
 	i = 0;
 	while (i < height)
 	{
@@ -34,12 +34,11 @@ void free_map(t_map **map, int height)
 		}
 		i++;
 	}
-
 	free(map);
 }
 
 /*Inicializa el sistema MLX y configura la estructura base*/
-static int initialize_mlx_system(t_vars *vars, t_map **map, int height)
+static int	initialize_mlx_system(t_vars *vars, t_map **map, int height)
 {
 	vars->mlx = mlx_init();
 	if (!vars->mlx)
@@ -52,22 +51,20 @@ static int initialize_mlx_system(t_vars *vars, t_map **map, int height)
 }
 
 /*Configura ventana, proyección y parámetros gráficos*/
-static int setup_window_and_projection(t_vars *vars, int width, int height, t_projection *projection)
+static int	setup_window_and_projection(t_vars *vars, int width, int height,
+		t_projection *projection)
 {
-	int win_width;
-	int win_height;
-	float auto_zoom;
+	int		win_width;
+	int		win_height;
+	float	auto_zoom;
 
 	calculate_window_size(width, height, &win_width, &win_height);
 	auto_zoom = calculate_auto_zoom(width, height, win_width, win_height);
-
 	projection->zoom = auto_zoom;
 	projection->offset_x = win_width / 2.5;
 	projection->offset_y = win_height / 2.5;
 	projection->elevation = 0.5;
-
 	isometric_projection(vars->map, vars->height, vars->width, projection);
-
 	vars->win = mlx_new_window(vars->mlx, win_width, win_height, WINDOW_TITLE);
 	if (!vars->win)
 	{
@@ -79,22 +76,24 @@ static int setup_window_and_projection(t_vars *vars, int width, int height, t_pr
 }
 
 /*Lanza la aplicación FdF iniciando el renderizado y la interactividad.
-Dibuja el mapa inicial, configura los hooks de eventos y entra en el loop principal de MLX, manteniendo la ventana activa hasta que el usuario la cierre.
+Dibuja el mapa inicial,
+	configura los hooks de eventos y entra en el loop principal de MLX,
+	manteniendo la ventana activa hasta que el usuario la cierre.
 */
-static void launch_fdf(t_vars *vars)
+static void	launch_fdf(t_vars *vars)
 {
 	render_map(vars);
 	setup_hooks(vars);
 	mlx_loop(vars->mlx);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	int height;
-	int width;
-	t_map **map;
-	t_projection projection;
-	t_vars vars;
+	int				height;
+	int				width;
+	t_map			**map;
+	t_projection	projection;
+	t_vars			vars;
 
 	if (argc <= 1)
 		return (write(1, "Usage: ./fdf <map_file>\n", 24), 1);
@@ -108,7 +107,6 @@ int main(int argc, char **argv)
 	vars.map = map;
 	vars.height = height;
 	vars.width = width;
-	vars.projection = projection;
 	if (setup_window_and_projection(&vars, width, height, &projection) != 0)
 		return (1);
 	vars.projection = projection;
