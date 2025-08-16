@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegfern <diegfern@student.42.fr>          +#+  +:+       +#+        */
+/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 14:07:24 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/10 12:43:41 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/16 12:17:49 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # define DEFAULT_COLOR 0xFFFFFF
 # define WINDOW_WIDTH 800
 # define WINDOW_HEIGHT 600
+# define MAX_WINDOW_WIDTH 1920
+# define MAX_WINDOW_HEIGHT 1080
 # define WINDOW_TITLE "FdF - diegfern"
 
 typedef struct s_map
@@ -51,11 +53,18 @@ typedef struct s_vars
 {
 	void			*mlx;
 	void			*win;
+	void			*img;
+	char			*addr;
+	int				bits_per_pixel;
+	int				line_length;
+	int				endian;
+	int				img_width;
+	int				img_height;
 	t_map			**map;
 	int				height;
 	int				width;
-	t_projection	projection;
-}					t_vars;
+    t_projection	projection;
+}                   t_vars;
 
 typedef struct s_bresenham
 {
@@ -105,6 +114,12 @@ void				cleanup_line_resources(char **split, char *line);
 void				draw_line(t_vars *vars, t_map point1, t_map point2);
 void				draw_wireframe(t_vars *vars);
 void				render_map(t_vars *vars);
+
+// 		Drawing -> Image utils
+void				my_mlx_pixel_put(t_vars *vars, int x, int y, int color);
+int					init_image(t_vars *vars, int width, int height);
+void				clear_image_buffer(t_vars *vars);
+
 // 		Drawing Bresenham
 int					absolute_value(int value);
 void				init_bresenham(t_map p1, t_map p2, t_bresenham *vars_bres);
@@ -139,5 +154,6 @@ void				cleanup_split_array(char **split);
 // Utils
 void				clear_window(t_vars *vars);
 char				*clear_var(char **str);
+void				free_map_and_resources(t_vars *vars);
 
 #endif

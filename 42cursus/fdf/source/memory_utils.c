@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegfern <diegfern@student.42.fr>          +#+  +:+       +#+        */
+/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 12:20:00 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/10 12:44:03 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/16 11:41:56 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,29 @@ t_map	**allocate_map(int height, int width)
 		i++;
 	}
 	return (map);
+}
+
+/*
+Libera la memoria de una matriz bidimensional de estructuras t_map.
+ Primero libera cada fila individualmente, luego el array principal de punteros,
+	evitando memory leaks
+ al finalizar el programa o en caso de error.
+*/
+void	free_map(t_map **map, int height)
+{
+	int	i;
+
+	if (!map)
+		return ;
+	i = 0;
+	while (i < height)
+	{
+		if (map[i])
+		{
+			free(map[i]);
+			map[i] = NULL;
+		}
+		i++;
+	}
+	free(map);
 }

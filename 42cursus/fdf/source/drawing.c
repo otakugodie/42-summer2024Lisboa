@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   drawing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegfern <diegfern@student.42.fr>          +#+  +:+       +#+        */
+/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 14:43:07 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/10 12:16:21 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/16 11:20:39 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	init_line_position(t_map point, t_line_pos *pos)
 	pos->current_distance = 0;
 }
 
-/*Calcul el color interpolado*/
+/*Calcula el color interpolado*/
 static unsigned int	get_interp_color(unsigned int c1, unsigned int c2,
 		int current_dist, int total_dist)
 {
@@ -46,7 +46,8 @@ void	draw_line(t_vars *vars, t_map point1, t_map point2)
 	{
 		cur_color = get_interp_color(point1.color, point2.color,
 				pos.current_distance, vars_bres.total_distance);
-		mlx_pixel_put(vars->mlx, vars->win, pos.x, pos.y, cur_color);
+		//mlx_pixel_put(vars->mlx, vars->win, pos.x, pos.y, cur_color);		//Logica de pixel_put
+		my_mlx_pixel_put(vars, pos.x, pos.y, cur_color);
 		if (pos.x == point2.screen_x && pos.y == point2.screen_y)
 			break ;
 		update_position(&vars_bres, &pos);
@@ -76,8 +77,12 @@ void	draw_wireframe(t_vars *vars)
 }
 
 // Función para dibujar el mapa completo (wireframe + puntos)
+// Con cambio a imagen, limpia el buffer, dibuja en el buffer no en la pantalla y hace un solo llamado para poner la imagen en la pantalla
 void	render_map(t_vars *vars)
 {
-	clear_window(vars);
+	// clear_window(vars);
+	//draw_wireframe(vars);
+	clear_image_buffer(vars);
 	draw_wireframe(vars);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
 }

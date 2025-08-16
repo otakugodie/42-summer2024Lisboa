@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hooks.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegfern <diegfern@student.42.fr>          +#+  +:+       +#+        */
+/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:47:31 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/10 11:05:00 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/16 12:17:02 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 int	close_window(void *param)
 {
-	(void)param;
+	//(void)param;
+	t_vars *vars = (t_vars *)param;
+	free_map_and_resources(vars);
 	exit(0);
 	return (0);
 }

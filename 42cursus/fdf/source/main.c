@@ -3,38 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegfern <diegfern@student.42.fr>          +#+  +:+       +#+        */
+/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 14:17:12 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/10 13:25:41 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/16 12:17:00 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-/*
-Libera la memoria de una matriz bidimensional de estructuras t_map.
- Primero libera cada fila individualmente, luego el array principal de punteros,
-	evitando memory leaks
- al finalizar el programa o en caso de error.
-*/
-void	free_map(t_map **map, int height)
-{
-	int	i;
 
-	if (!map)
-		return ;
-	i = 0;
-	while (i < height)
-	{
-		if (map[i])
-		{
-			free(map[i]);
-			map[i] = NULL;
-		}
-		i++;
-	}
-	free(map);
+/*Maneja errores durante la inicialización liberando recursos*/
+static int	handle_init_error(t_vars *vars, const char *error_msg)
+{
+	write(2, error_msg, ft_strlen(error_msg));
+	free_map(vars->map, vars->height);
+	return (-1);
 }
 
 /*Inicializa el sistema MLX y configura la estructura base*/
@@ -67,10 +51,11 @@ static int	setup_window_and_projection(t_vars *vars, int width, int height,
 	isometric_projection(vars->map, vars->height, vars->width, projection);
 	vars->win = mlx_new_window(vars->mlx, win_width, win_height, WINDOW_TITLE);
 	if (!vars->win)
+		return (handle_init_error(vars, "Error: No se pudo crear la ventana\n"));
+	if (init_image(vars, win_width, win_height) == -1)
 	{
-		write(2, "Error: No se pudo crear la ventana\n", 35);
-		free_map(vars->map, vars->height);
-		return (-1);
+		mlx_destroy_window(vars->mlx, vars->win);
+		return (handle_init_error(vars, "Error: No se pudo crear la imagen\n"));
 	}
 	return (0);
 }
@@ -111,5 +96,6 @@ int	main(int argc, char **argv)
 		return (1);
 	vars.projection = projection;
 	launch_fdf(&vars);
+	free_map_and_resources(&vars);
 	return (0);
 }

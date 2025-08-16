@@ -6,7 +6,7 @@
 #    By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/24 21:13:39 by diegfern          #+#    #+#              #
-#    Updated: 2025/08/10 16:08:52 by diegfern         ###   ########.fr        #
+#    Updated: 2025/08/16 11:24:39 by diegfern         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRCS = $(SRCDIR)/main.c \
 		$(SRCDIR)/memory_utils.c \
 		$(SRCDIR)/parsing_utils.c \
 		$(SRCDIR)/color_utils.c \
+		$(SRCDIR)/image_utils.c \
 
 
 # Archivos objeto

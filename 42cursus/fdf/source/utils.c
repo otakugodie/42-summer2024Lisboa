@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegfern <diegfern@student.42.fr>          +#+  +:+       +#+        */
+/*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:51:48 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/10 11:14:36 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/16 11:58:51 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,25 @@ char	*clear_var(char **str)
 		*str = NULL;
 	}
 	return (NULL);
+}
+
+void	free_map_and_resources(t_vars *vars)
+{
+	if (vars->img)
+		mlx_destroy_image(vars->mlx, vars->img);
+
+	if (vars->map)
+	{
+		int i = 0;
+		while (i < vars->height)
+		{
+			if (vars->map[i])
+			{
+				free(vars->map[i]);
+				vars->map[i] = NULL;
+			}
+			i++;
+		}
+		free(vars->map);
+	}
 }
