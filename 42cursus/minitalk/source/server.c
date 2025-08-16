@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/06/24 18:33:59 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/16 17:06:40 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
 
 void	ft_putnbr_fd(int n, int fd)
 {
@@ -37,10 +38,35 @@ void	ft_putnbr_fd(int n, int fd)
 	write(fd, &c, 1);
 }
 
+void	handle_end_message(char *buffer, int *msg_index, pid_t client_pid)
+{
+	buffer[*msg_index] = '\0';
+	write(1, buffer, *msg_index);
+	write(1, "\n", 1);
+	*msg_index = 0;
+	kill(client_pid, SIGUSR2);
+}
+
+void	hand_comp_char(char c, char *buffer, int *msg_index, pid_t client_pid)
+{
+	if (c == '\0')
+	{
+		handle_end_message(buffer, msg_index, client_pid);
+		return ;
+	}
+	if (*msg_index < 1023)
+	{
+		buffer[*msg_index] = c;
+		(*msg_index)++;
+	}
+}
+
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static char	c;
 	static int	bit_count;
+	static char	buffer[1024];
+	static int	msg_index;
 
 	(void)ucontext;
 	if (sig == SIGUSR1)
@@ -50,17 +76,11 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 	bit_count++;
 	if (bit_count == 8)
 	{
-		if (c == '\0')
-		{
-			write(1, "\n", 1);
-			kill((*info).si_pid, SIGUSR2);
-			bit_count = 0;
-			c = 0;
-			return ;
-		}
-		write(1, &c, 1);
+		hand_comp_char(c, buffer, &msg_index, (*info).si_pid);
 		bit_count = 0;
 		c = 0;
+		if (msg_index == 0)
+			return ;
 	}
 	kill((*info).si_pid, SIGUSR1);
 }

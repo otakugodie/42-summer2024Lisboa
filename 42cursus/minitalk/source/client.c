@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:06 by diegfern          #+#    #+#             */
-/*   Updated: 2025/06/24 18:48:49 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/16 16:53:29 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,9 +104,9 @@ int	main(int argc, char **argv)
 	char	*message;
 	int		i;
 
-	if (argc != 3)
+	if (argc != 3 || ft_atoi(argv[1]) < 1)
 	{
-		write(1, "Must insert: ./client [PID_SERVER] 'Message' \n", 47);
+		write(1, "Problem with arguments and [PID] must > 0 \n", 44);
 		return (1);
 	}
 	pid_server = ft_atoi(argv[1]);
