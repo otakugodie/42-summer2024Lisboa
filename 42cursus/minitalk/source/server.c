@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/16 17:06:40 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/21 11:19:35 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
 
 void	ft_putnbr_fd(int n, int fd)
 {
@@ -38,35 +37,60 @@ void	ft_putnbr_fd(int n, int fd)
 	write(fd, &c, 1);
 }
 
-void	handle_end_message(char *buffer, int *msg_index, pid_t client_pid)
+char	*resize_message(char *message, int msg_len, int new_capacity)
 {
-	buffer[*msg_index] = '\0';
-	write(1, buffer, *msg_index);
-	write(1, "\n", 1);
-	*msg_index = 0;
-	kill(client_pid, SIGUSR2);
+	char	*new_message;
+	int		i;
+
+	new_message = malloc(new_capacity);
+	if (!new_message)
+		return (NULL);
+	i = 0;
+	while (i < msg_len)
+	{
+		new_message[i] = message[i];
+		i++;
+	}
+	free(message);
+	return (new_message);
 }
 
-void	hand_comp_char(char c, char *buffer, int *msg_index, pid_t client_pid)
+void	process_complete_char(char c, siginfo_t *info)
 {
+	static char	*message;
+	static int	msg_len;
+	static int	msg_capacity;
+
 	if (c == '\0')
 	{
-		handle_end_message(buffer, msg_index, client_pid);
+		if (message)
+		{
+			write(1, message, msg_len);
+			write(1, "\n", 1);
+			free(message);
+			message = NULL;
+			msg_len = 0;
+			msg_capacity = 0;
+		}
+		kill((*info).si_pid, SIGUSR2);
 		return ;
 	}
-	if (*msg_index < 1023)
+	if (!message)
 	{
-		buffer[*msg_index] = c;
-		(*msg_index)++;
+		msg_capacity = 1024;
+		msg_len = 0;
+		message = malloc(msg_capacity);
 	}
+	else if (msg_len >= msg_capacity - 1)
+		message = resize_message(message, msg_len, msg_capacity *= 2);
+	if (message)
+		message[msg_len++] = c;
 }
 
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static char	c;
 	static int	bit_count;
-	static char	buffer[1024];
-	static int	msg_index;
 
 	(void)ucontext;
 	if (sig == SIGUSR1)
@@ -76,11 +100,9 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 	bit_count++;
 	if (bit_count == 8)
 	{
-		hand_comp_char(c, buffer, &msg_index, (*info).si_pid);
+		process_complete_char(c, info);
 		bit_count = 0;
 		c = 0;
-		if (msg_index == 0)
-			return ;
 	}
 	kill((*info).si_pid, SIGUSR1);
 }
