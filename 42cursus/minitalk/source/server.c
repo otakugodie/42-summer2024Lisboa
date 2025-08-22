@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/21 23:29:55 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/21 23:48:27 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,56 +37,6 @@ void	ft_putnbr_fd(int n, int fd)
 	write(fd, &c, 1);
 }
 
-char	*resize_message(char *message, int msg_len, int new_capacity)
-{
-	char	*new_message;
-	int		i;
-
-	new_message = malloc(new_capacity);
-	if (!new_message)
-		return (NULL);
-	i = 0;
-	while (i < msg_len)
-	{
-		new_message[i] = message[i];
-		i++;
-	}
-	free(message);
-	return (new_message);
-}
-
-void	process_complete_char(char c, siginfo_t *info)
-{
-	static char	*message;
-	static int	msg_len;
-	static int	msg_capacity;
-
-	if (c == '\0')
-	{
-		if (message)
-		{
-			write(1, message, msg_len);
-			write(1, "\n", 1);
-			free(message);
-			message = NULL;
-			msg_len = 0;
-			msg_capacity = 0;
-		}
-		kill((*info).si_pid, SIGUSR2);
-		return ;
-	}
-	if (!message)
-	{
-		msg_capacity = 1024;
-		msg_len = 0;
-		message = malloc(msg_capacity);
-	}
-	else if (msg_len >= msg_capacity - 1)
-		message = resize_message(message, msg_len, msg_capacity *= 2);
-	if (message)
-		message[msg_len++] = c;
-}
-
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static char	c;
@@ -100,7 +50,15 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 	bit_count++;
 	if (bit_count == 8)
 	{
-		process_complete_char(c, info);
+		if (c == '\0')
+		{
+			write(1, "\n", 1);
+			kill((*info).si_pid, SIGUSR2);
+			bit_count = 0;
+			c = 0;
+			return ;
+		}
+		write(1, &c, 1);
 		bit_count = 0;
 		c = 0;
 	}
