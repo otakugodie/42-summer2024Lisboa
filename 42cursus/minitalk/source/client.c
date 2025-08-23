@@ -6,41 +6,13 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:06 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/16 16:53:29 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/23 19:42:04 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "minitalk.h"
 
 volatile sig_atomic_t	g_ack_received;
-
-int	ft_atoi(const char *nptr)
-{
-	int	i;
-	int	result;
-	int	sign;
-
-	sign = 1;
-	result = 0;
-	i = 0;
-	while ((nptr[i] == ' ' || (nptr[i] >= '\t' && nptr[i] <= '\r')) && nptr[i])
-		i++;
-	if (nptr[i] == '-' || nptr[i] == '+')
-	{
-		if (nptr[i] == '-')
-			sign *= (-1);
-		i++;
-	}
-	while (nptr[i] >= '0' && nptr[i] <= '9' && nptr[i])
-	{
-		result = result * 10 + (nptr[i] - '0');
-		i++;
-	}
-	return (result * sign);
-}
 
 void	send_char_to_server(int pid, char c)
 {
@@ -58,7 +30,7 @@ void	send_char_to_server(int pid, char c)
 			kill(pid, SIGUSR1);
 		while (!g_ack_received)
 		{
-			usleep(100);
+			usleep(250);  // ✅ Aumentar delay aquí también
 			if (--timeout == 0)
 			{
 				write(2, "Error: Server timeout\n", 22);
@@ -89,12 +61,41 @@ void	wait_final_ack(void)
 	timeout = 50000;
 	while (g_ack_received != 2)
 	{
-		usleep(100);
+		usleep(250);  // ✅ Aumentar delay en wait_final_ack también
 		if (--timeout == 0)
 		{
 			write(2, "Error: Final acknowledgment timeout\n", 36);
 			exit(1);
 		}
+	}
+}
+
+static void	ft_send_size(int pid_server, char *message)
+{
+	int	size;
+	int	i;
+	int	timeout;
+
+	size = 0;
+	while (message[size])
+		size++;
+	i = 31;
+	while (i >= 0)
+	{
+		g_ack_received = 0;
+		timeout = 50000;
+		if (size >> i & 1)
+			kill(pid_server, SIGUSR2);
+		else
+			kill(pid_server, SIGUSR1);
+		while (!g_ack_received && --timeout > 0)
+			usleep(250);  // ✅ Aumentar de 100 a 1000 microsegundos
+		if (timeout == 0)
+		{
+			write(2, "Error: Server timeout\n", 22);
+			exit(1);
+		}
+		i--;
 	}
 }
 
@@ -115,6 +116,7 @@ int	main(int argc, char **argv)
 	g_ack_received = 0;
 	signal(SIGUSR1, handshake_handler);
 	signal(SIGUSR2, handshake_handler);
+	ft_send_size(pid_server, message);
 	while (message[i])
 	{
 		send_char_to_server(pid_server, message[i]);

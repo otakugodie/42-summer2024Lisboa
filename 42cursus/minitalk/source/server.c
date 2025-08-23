@@ -6,38 +6,13 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/21 23:48:27 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/23 19:55:49 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "minitalk.h"
 
-void	ft_putnbr_fd(int n, int fd)
-{
-	char	c;
-
-	if (n == -2147483648)
-	{
-		write(fd, "-2147483648", 11);
-		return ;
-	}
-	if (n < 0)
-	{
-		write(fd, "-", 1);
-		n = -n;
-	}
-	if (n >= 10)
-	{
-		ft_putnbr_fd((n / 10), fd);
-	}
-	c = (n % 10) + '0';
-	write(fd, &c, 1);
-}
-
-void	signal_handler(int sig, siginfo_t *info, void *ucontext)
+/* void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static char	c;
 	static int	bit_count;
@@ -63,7 +38,71 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 		c = 0;
 	}
 	kill((*info).si_pid, SIGUSR1);
+} */
+/************************************************************************************/
+/************************************************************************************/
+/************************************************************************************/
+void	signal_handler(int sig, siginfo_t *info, void *ucontext)
+{
+	static int total_bits = 0;   // ← Estática en lugar de global
+	static int bit_count = 0;    // bits del elemento actual
+	static int len = 0;          // tamaño del mensaje
+	static char c = 0;           // carácter en construcción
+	static char *buffer = NULL;  // buffer del mensaje
+	static int buffer_index = 0; // índice en el buffer
+	(void)ucontext;
+	if (total_bits < 32) // 🔵 FASE 1: Recibir tamaño
+	{
+		// Reconstruir longitud
+		if (sig == SIGUSR2)
+		{
+			len = (len << 1) | 1;
+		}
+			
+		else 
+		{
+			len = (len << 1) | 0;
+		}
+		if (++total_bits == 32) // Al completar 32 bits
+		{
+			buffer = malloc(len + 1); // Asignar memoria
+			buffer[len] = '\0';
+		}
+		kill(info->si_pid, SIGUSR1); // ✅ SÍ enviar ACK para tamaño
+		return ;
+	}
+	else // 🟢 FASE 2: Recibir mensaje
+	{
+		// Reconstruir carácter
+		if (sig == SIGUSR2)
+			c = (c << 1) | 1;
+		else
+			c = (c << 1) | 0;
+			if (++bit_count == 8) // 8 bits completos
+		{
+			buffer[buffer_index++] = c;
+			if (c == '\0') // 🔴 FINAL: mensaje completo
+			{
+				write(1, buffer, buffer_index - 1); // Imprimir sin '\0'
+				write(1, "\n", 1);
+				free(buffer);
+				// Resetear todo
+				total_bits = bit_count = len = buffer_index = 0;
+				c = 0;
+				buffer = NULL;
+				kill(info->si_pid, SIGUSR2); // Confirmación final
+				return ;
+			}
+			bit_count = 0;
+			c = 0;
+		}
+	}
+	kill(info->si_pid, SIGUSR1); // ACK normal
 }
+
+/************************************************************************************/
+/************************************************************************************/
+/************************************************************************************/
 
 int	main(void)
 {
@@ -77,8 +116,11 @@ int	main(void)
 	sigaddset(&sa.sa_mask, SIGUSR1);
 	sigaddset(&sa.sa_mask, SIGUSR2);
 	sa.sa_sigaction = signal_handler;
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
+	if (sigaction(SIGUSR1, &sa, NULL) || sigaction(SIGUSR2, &sa, NULL))
+	{
+		write(1, "Closing connection server\n", 26);
+		exit(0);
+	}
 	while (1)
 	{
 		pause();
