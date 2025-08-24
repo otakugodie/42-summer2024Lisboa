@@ -6,7 +6,7 @@
 #    By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/24 21:13:39 by diegfern          #+#    #+#              #
-#    Updated: 2025/08/16 11:24:39 by diegfern         ###   ########.fr        #
+#    Updated: 2025/08/25 00:29:40 by diegfern         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ CFLAGS = -Wall -Wextra -Werror
 # Directorios
 SRCDIR = .
 LIBFTDIR = libft
-#MLXDIR = ./minilibx-linux
-MLXDIR = ../../../minilibx
+#MLXDIR = ./minilibx-linux	# Linux on 42
+MLXDIR = ../../../minilibx	# Windows
 
 # Archivos fuente
 SRCS = $(SRCDIR)/main.c \
@@ -42,6 +42,7 @@ OBJS = $(SRCS:.c=.o)
 
 # Librerías
 LIBFT = $(LIBFTDIR)/libft.a
+MLX = $(MLXDIR)/libmlx.a
 MLX_FLAGS = -L$(MLXDIR) -lmlx -lXext -lX11 -lm -lz
 
 # Includes
@@ -51,12 +52,16 @@ INCLUDES = -I. -I$(LIBFTDIR) -I$(MLXDIR)
 all: $(NAME)
 
 # Compilar el programa principal
-$(NAME): $(LIBFT) $(OBJS)
+$(NAME): $(LIBFT) $(MLX) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 
 # Compilar libft
 $(LIBFT):
 	make -C $(LIBFTDIR)
+
+# Compilar minilibx
+$(MLX):
+	make -C $(MLXDIR) all
 
 # Regla para archivos objeto
 %.o: %.c fdf.h
@@ -66,6 +71,7 @@ $(LIBFT):
 clean:
 	rm -f $(OBJS)
 	make clean -C $(LIBFTDIR)
+	make clean -C $(MLXDIR)
 
 # Limpiar todo
 fclean: clean
