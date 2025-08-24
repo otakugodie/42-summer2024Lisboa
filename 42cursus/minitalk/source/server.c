@@ -6,91 +6,80 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/23 19:55:49 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/24 23:23:56 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-/* void	signal_handler(int sig, siginfo_t *info, void *ucontext)
+static void	handle_size_reception(t_data *cli_data, int sig, siginfo_t *info)
 {
-	static char	c;
-	static int	bit_count;
-
-	(void)ucontext;
-	if (sig == SIGUSR1)
-		c = (c << 1) | 0;
-	else if (sig == SIGUSR2)
-		c = (c << 1) | 1;
-	bit_count++;
-	if (bit_count == 8)
+	if (sig == SIGUSR2)
+		cli_data->len = (cli_data->len << 1) | 1;
+	else
+		cli_data->len = (cli_data->len << 1) | 0;
+	if (++(cli_data->total_bits) == 32)
 	{
-		if (c == '\0')
-		{
-			write(1, "\n", 1);
-			kill((*info).si_pid, SIGUSR2);
-			bit_count = 0;
-			c = 0;
-			return ;
-		}
-		write(1, &c, 1);
-		bit_count = 0;
-		c = 0;
+		cli_data->buffer = malloc(cli_data->len + 1);
+		cli_data->buffer[cli_data->len] = '\0';
 	}
-	kill((*info).si_pid, SIGUSR1);
-} */
-/************************************************************************************/
-/************************************************************************************/
-/************************************************************************************/
-void	signal_handler(int sig, siginfo_t *info, void *ucontext)
+	kill(info->si_pid, SIGUSR1);
+}
+
+static void	reset_vars(t_data *data, int *bit_count, int *buffer_index, char *c)
 {
-	static int total_bits = 0;   // ← Estática en lugar de global
-	static int bit_count = 0;    // bits del elemento actual
-	static int len = 0;          // tamaño del mensaje
-	static char c = 0;           // carácter en construcción
-	static char *buffer = NULL;  // buffer del mensaje
-	static int buffer_index = 0; // índice en el buffer
-	(void)ucontext;
-	if (total_bits < 32) // 🔵 FASE 1: Recibir tamaño
+	free(data->buffer);
+	data->total_bits = 0;
+	data->len = 0;
+	data->buffer = NULL;
+	*bit_count = 0;
+	*buffer_index = 0;
+	*c = 0;
+}
+
+static void	proc_comp_char(t_data *data, char *c, int *bit_count, int *buffer_index, siginfo_t *info)
+{
+	data->buffer[(*buffer_index)++] = *c;
+	if (*c == '\0')
 	{
-		// Reconstruir longitud
-		if (sig == SIGUSR2)
-		{
-			len = (len << 1) | 1;
-		}
-			
-		else 
-		{
-			len = (len << 1) | 0;
-		}
-		if (++total_bits == 32) // Al completar 32 bits
-		{
-			buffer = malloc(len + 1); // Asignar memoria
-			buffer[len] = '\0';
-		}
-		kill(info->si_pid, SIGUSR1); // ✅ SÍ enviar ACK para tamaño
+		write(1, data->buffer, *buffer_index - 1);
+		write(1, "\n", 1);
+		reset_vars(data, bit_count, buffer_index, c);
+		kill(info->si_pid, SIGUSR2);
 		return ;
 	}
-	else // 🟢 FASE 2: Recibir mensaje
+	*bit_count = 0;
+	*c = 0;
+}
+
+void	signal_handler(int sig, siginfo_t *info, void *ucontext)
+{
+	static int		bit_count;
+	static char		c;
+	static int		buffer_index;
+	static t_data	data;
+
+	(void)ucontext;
+	if (data.total_bits < 32) // 🔵 FASE 1: Recibir tamaño
 	{
-		// Reconstruir carácter
+		handle_size_reception(&data, sig, info);
+		return ;
+	}
+	else if (data.total_bits >= 32) // 🟢 FASE 2: Recibir mensaje
+	{
 		if (sig == SIGUSR2)
 			c = (c << 1) | 1;
 		else
 			c = (c << 1) | 0;
-			if (++bit_count == 8) // 8 bits completos
+		if (++bit_count == 8)
 		{
-			buffer[buffer_index++] = c;
-			if (c == '\0') // 🔴 FINAL: mensaje completo
+			data.buffer[buffer_index++] = c;
+			if (c == '\0') // 🔴 FINAL: Mensaje completo
 			{
-				write(1, buffer, buffer_index - 1); // Imprimir sin '\0'
+				write(1, data.buffer, buffer_index - 1);
 				write(1, "\n", 1);
-				free(buffer);
-				// Resetear todo
-				total_bits = bit_count = len = buffer_index = 0;
-				c = 0;
-				buffer = NULL;
-				kill(info->si_pid, SIGUSR2); // Confirmación final
+				reset_vars(&data, &bit_count, &buffer_index, &c);
+				kill(info->si_pid, SIGUSR2);
 				return ;
 			}
 			bit_count = 0;
@@ -99,10 +88,6 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 	}
 	kill(info->si_pid, SIGUSR1); // ACK normal
 }
-
-/************************************************************************************/
-/************************************************************************************/
-/************************************************************************************/
 
 int	main(void)
 {
