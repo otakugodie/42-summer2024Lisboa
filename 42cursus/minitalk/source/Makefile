@@ -5,53 +5,46 @@
 #                                                     +:+ +:+         +:+      #
 #    By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/02/02 19:29:35 by diegfern          #+#    #+#              #
-#    Updated: 2025/06/13 17:43:30 by diegfern         ###   ########.fr        #
+#    Created: 2025/08/24 23:48:05 by diegfern          #+#    #+#              #
+#    Updated: 2025/08/24 23:48:09 by diegfern         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME_CLIENT = client
-NAME_SERVER = server
+NAME		= minitalk
+CLIENT		= client
+SERVER		= server
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CC			= cc
+CFLAGS		= -Wall -Wextra -Werror
 
-# Cuando uso libft, descomentar estas líneas
-# LIBFT_DIR = ./libft
-# LIBFT = $(LIBFT_DIR)/libft.a
+SRC_CLIENT	= client.c utils.c
+SRC_SERVER	= server.c utils.c
 
+OBJ_CLIENT	= $(SRC_CLIENT:.c=.o)
+OBJ_SERVER	= $(SRC_SERVER:.c=.o)
 
-SRC_CLIENT = client.c
-SRC_SERVER = server.c
+all: $(NAME)
 
-OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
-OBJ_SERVER = $(SRC_SERVER:.c=.o)
+$(NAME): $(CLIENT) $(SERVER)
 
-all: $(NAME_CLIENT) $(NAME_SERVER)
+$(CLIENT): $(OBJ_CLIENT)
+	$(CC) $(CFLAGS) $(OBJ_CLIENT) -o $(CLIENT)
 
-$(NAME_CLIENT): $(OBJ_CLIENT)
-	@echo "Compiling client..."
-	@$(CC) $(CFLAGS) $(OBJ_CLIENT) -o $(NAME_CLIENT)
-	@echo "Client executable created!"
-
-$(NAME_SERVER): $(OBJ_SERVER)
-	@echo "Compiling server..."
-	@$(CC) $(CFLAGS) $(OBJ_SERVER) -o $(NAME_SERVER)
-	@echo "Server executable created!"
+$(SERVER): $(OBJ_SERVER)
+	$(CC) $(CFLAGS) $(OBJ_SERVER) -o $(SERVER)
 
 %.o: %.c
-	@echo "Compiling $<..."
-	@$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@echo "Cleaning object files..."
-	@rm -f $(OBJ_CLIENT) $(OBJ_SERVER)
+	rm -f $(OBJ_CLIENT) $(OBJ_SERVER)
 
 fclean: clean
-	@echo "Cleaning executables..."
-	@rm -f $(NAME_CLIENT) $(NAME_SERVER)
+	rm -f $(CLIENT) $(SERVER)
 
 re: fclean all
+
+.PHONY: all clean fclean re
 
 
 

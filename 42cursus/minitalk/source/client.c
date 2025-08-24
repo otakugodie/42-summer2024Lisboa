@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:06 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/23 19:42:04 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/24 23:38:04 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	send_char_to_server(int pid, char c)
 			kill(pid, SIGUSR1);
 		while (!g_ack_received)
 		{
-			usleep(250);  // ✅ Aumentar delay aquí también
+			usleep(250);
 			if (--timeout == 0)
 			{
 				write(2, "Error: Server timeout\n", 22);
@@ -61,7 +61,7 @@ void	wait_final_ack(void)
 	timeout = 50000;
 	while (g_ack_received != 2)
 	{
-		usleep(250);  // ✅ Aumentar delay en wait_final_ack también
+		usleep(250);
 		if (--timeout == 0)
 		{
 			write(2, "Error: Final acknowledgment timeout\n", 36);
@@ -89,7 +89,7 @@ static void	ft_send_size(int pid_server, char *message)
 		else
 			kill(pid_server, SIGUSR1);
 		while (!g_ack_received && --timeout > 0)
-			usleep(250);  // ✅ Aumentar de 100 a 1000 microsegundos
+			usleep(250);
 		if (timeout == 0)
 		{
 			write(2, "Error: Server timeout\n", 22);

@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:27:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/24 23:23:56 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/08/24 23:36:56 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,56 +37,45 @@ static void	reset_vars(t_data *data, int *bit_count, int *buffer_index, char *c)
 	*c = 0;
 }
 
-static void	proc_comp_char(t_data *data, char *c, int *bit_count, int *buffer_index, siginfo_t *info)
+static void	handle_message_reception(t_data *data, int sig, siginfo_t *info)
 {
-	data->buffer[(*buffer_index)++] = *c;
-	if (*c == '\0')
+	static int	bit_count;
+	static char	c;
+	static int	buffer_index;
+
+	if (sig == SIGUSR2)
+		c = (c << 1) | 1;
+	else
+		c = (c << 1) | 0;
+	if (++bit_count == 8)
 	{
-		write(1, data->buffer, *buffer_index - 1);
-		write(1, "\n", 1);
-		reset_vars(data, bit_count, buffer_index, c);
-		kill(info->si_pid, SIGUSR2);
-		return ;
+		data->buffer[buffer_index++] = c;
+		if (c == '\0')
+		{
+			write(1, data->buffer, buffer_index - 1);
+			write(1, "\n", 1);
+			reset_vars(data, &bit_count, &buffer_index, &c);
+			kill(info->si_pid, SIGUSR2);
+			return ;
+		}
+		bit_count = 0;
+		c = 0;
 	}
-	*bit_count = 0;
-	*c = 0;
+	kill(info->si_pid, SIGUSR1);
 }
 
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
-	static int		bit_count;
-	static char		c;
-	static int		buffer_index;
 	static t_data	data;
 
 	(void)ucontext;
-	if (data.total_bits < 32) // 🔵 FASE 1: Recibir tamaño
+	if (data.total_bits < 32)
 	{
 		handle_size_reception(&data, sig, info);
 		return ;
 	}
-	else if (data.total_bits >= 32) // 🟢 FASE 2: Recibir mensaje
-	{
-		if (sig == SIGUSR2)
-			c = (c << 1) | 1;
-		else
-			c = (c << 1) | 0;
-		if (++bit_count == 8)
-		{
-			data.buffer[buffer_index++] = c;
-			if (c == '\0') // 🔴 FINAL: Mensaje completo
-			{
-				write(1, data.buffer, buffer_index - 1);
-				write(1, "\n", 1);
-				reset_vars(&data, &bit_count, &buffer_index, &c);
-				kill(info->si_pid, SIGUSR2);
-				return ;
-			}
-			bit_count = 0;
-			c = 0;
-		}
-	}
-	kill(info->si_pid, SIGUSR1); // ACK normal
+	else
+		handle_message_reception(&data, sig, info);
 }
 
 int	main(void)
