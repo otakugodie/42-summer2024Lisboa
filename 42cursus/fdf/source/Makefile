@@ -6,7 +6,7 @@
 #    By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/24 21:13:39 by diegfern          #+#    #+#              #
-#    Updated: 2025/08/25 00:29:40 by diegfern         ###   ########.fr        #
+#    Updated: 2025/08/25 00:35:16 by diegfern         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ CFLAGS = -Wall -Wextra -Werror
 # Directorios
 SRCDIR = .
 LIBFTDIR = libft
-#MLXDIR = ./minilibx-linux	# Linux on 42
-MLXDIR = ../../../minilibx	# Windows
+MLXDIR = ./minilibx-linux	# Linux on 42
+#MLXDIR = ../../../minilibx	# Windows
 
 # Archivos fuente
 SRCS = $(SRCDIR)/main.c \
