@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:42:29 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/16 10:48:36 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/06 15:08:23 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,35 +66,35 @@ float	calculate_auto_zoom(int width, int height, int window_width,
 
 /*
 Calcula las dimensiones óptimas de ventana basándose en el tamaño del mapa.
-Usa un tamaño mínimo y maximo predefinidos o calcula uno proporcional al mapa con margen,
-	seleccionando siempre el mayor para garantizar que el contenido sea visible.
+Usa un tamaño mínimo y maximo predefinidos o calcula uno proporcional al mapa
+con margen, seleccionando siempre el mayor para garantizar que el
+contenido sea visible.
 */
 void	calculate_window_size(int width, int height, int *window_width,
 		int *window_height)
 {
-	int	min_width;
-	int	min_height;
-	int	max_width;
-	int	max_height;
-	int	recommended_width;
-	int	recommended_height;
+	int						min_width;
+	int						min_height;
+	int						max_width;
+	int						max_height;
+	t_recommended_window	rec;
 
 	min_width = WINDOW_WIDTH;
 	min_height = WINDOW_HEIGHT;
 	max_width = MAX_WINDOW_WIDTH;
 	max_height = MAX_WINDOW_HEIGHT;
-	recommended_width = (width + height) * 20 + 200;
-	recommended_height = (width + height) * 15 + 200;
-	if (recommended_width < min_width)
+	rec.width = (width + height) * 20 + 200;
+	rec.height = (width + height) * 15 + 200;
+	if (rec.width < min_width)
 		*window_width = min_width;
-	else if (recommended_width > max_width)
+	else if (rec.width > max_width)
 		*window_width = max_width;
 	else
-		*window_width = recommended_width;
-	if (recommended_height < min_height)
+		*window_width = rec.width;
+	if (rec.height < min_height)
 		*window_height = min_height;
-	else if (recommended_height > max_height)
+	else if (rec.height > max_height)
 		*window_height = max_height;
 	else
-		*window_height = recommended_height;
+		*window_height = rec.height;
 }

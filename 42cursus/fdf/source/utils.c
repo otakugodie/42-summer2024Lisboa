@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:51:48 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/16 11:58:51 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/06 13:40:45 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,13 @@ char	*clear_var(char **str)
 
 void	free_map_and_resources(t_vars *vars)
 {
+	int	i;
+
 	if (vars->img)
 		mlx_destroy_image(vars->mlx, vars->img);
-
 	if (vars->map)
 	{
-		int i = 0;
+		i = 0;
 		while (i < vars->height)
 		{
 			if (vars->map[i])

@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:47:31 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/16 12:17:02 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/06 13:36:19 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 
 int	close_window(void *param)
 {
-	//(void)param;
-	t_vars *vars = (t_vars *)param;
+	t_vars	*vars;
+
+	vars = (t_vars *)param;
 	free_map_and_resources(vars);
 	exit(0);
 	return (0);
 }
 
 // Hook de redraw que se ejecuta cuando la ventana necesita ser redibujada,
-//Recalculando la proyección con parámetros actuales y luego redibuja
+// Recalculando la proyección con parámetros actuales y luego redibuja
 int	redraw(void *param)
 {
 	t_vars	*vars;

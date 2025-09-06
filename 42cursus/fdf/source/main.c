@@ -6,12 +6,11 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 14:17:12 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/16 12:17:00 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/06 13:34:33 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-
 
 /*Maneja errores durante la inicialización liberando recursos*/
 static int	handle_init_error(t_vars *vars, const char *error_msg)
@@ -51,7 +50,8 @@ static int	setup_window_and_projection(t_vars *vars, int width, int height,
 	isometric_projection(vars->map, vars->height, vars->width, projection);
 	vars->win = mlx_new_window(vars->mlx, win_width, win_height, WINDOW_TITLE);
 	if (!vars->win)
-		return (handle_init_error(vars, "Error: No se pudo crear la ventana\n"));
+		return (handle_init_error(vars,
+				"Error: No se pudo crear la ventana\n"));
 	if (init_image(vars, win_width, win_height) == -1)
 	{
 		mlx_destroy_window(vars->mlx, vars->win);

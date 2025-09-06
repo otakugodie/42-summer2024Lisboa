@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 14:07:24 by diegfern          #+#    #+#             */
-/*   Updated: 2025/08/16 12:17:49 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/06 15:08:45 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ typedef struct s_vars
 	t_map			**map;
 	int				height;
 	int				width;
-    t_projection	projection;
-}                   t_vars;
+	t_projection	projection;
+}					t_vars;
 
 typedef struct s_bresenham
 {
@@ -91,6 +91,12 @@ typedef struct s_rgb
 	int				g;
 	int				b;
 }					t_rgb;
+
+typedef struct s_recommended_window
+{
+	int				width;
+	int				height;
+}					t_recommended_window;
 
 /* ****************** Prototipos de funciones **************** */
 // Map parsing
