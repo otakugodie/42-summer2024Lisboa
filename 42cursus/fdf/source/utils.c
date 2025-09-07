@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:51:48 by diegfern          #+#    #+#             */
-/*   Updated: 2025/09/06 13:40:45 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/07 15:52:03 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,20 @@ char	*clear_var(char **str)
 	}
 	return (NULL);
 }
-
+/*
+Libera recursos gráficos y memoria del mapa.
+Destruye la imagen, la ventana y el display de MLX si existen.
+*/
 void	free_map_and_resources(t_vars *vars)
 {
 	int	i;
 
 	if (vars->img)
 		mlx_destroy_image(vars->mlx, vars->img);
+	if (vars->win)
+		mlx_destroy_window(vars->mlx, vars->win);
+	if (vars->mlx)
+		mlx_destroy_display(vars->mlx);
 	if (vars->map)
 	{
 		i = 0;

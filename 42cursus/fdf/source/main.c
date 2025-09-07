@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 14:17:12 by diegfern          #+#    #+#             */
-/*   Updated: 2025/09/06 13:34:33 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/07 16:47:54 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 static int	handle_init_error(t_vars *vars, const char *error_msg)
 {
 	write(2, error_msg, ft_strlen(error_msg));
-	free_map(vars->map, vars->height);
+	if (vars->map)
+		free_map(vars->map, vars->height);
 	return (-1);
 }
 
@@ -61,9 +62,9 @@ static int	setup_window_and_projection(t_vars *vars, int width, int height,
 }
 
 /*Lanza la aplicación FdF iniciando el renderizado y la interactividad.
-Dibuja el mapa inicial,
-	configura los hooks de eventos y entra en el loop principal de MLX,
-	manteniendo la ventana activa hasta que el usuario la cierre.
+Dibuja el mapa inicial, configura los hooks de eventos y entra 
+en el loop principal de MLX, manteniendo la ventana activa 
+hasta que el usuario la cierre.
 */
 static void	launch_fdf(t_vars *vars)
 {
@@ -85,10 +86,10 @@ int	main(int argc, char **argv)
 	if (parse_map_dimensions(argv[1], &height, &width) != 0)
 		return (1);
 	map = allocate_map(height, width);
-	if (fill_map(argv[1], map, width) != 0)
+	if (!map || fill_map(argv[1], map, width) != 0)
 		return (free_map(map, height), 1);
 	if (initialize_mlx_system(&vars, map, height) != 0)
-		return (1);
+		return (free_map(map, height), 1);
 	vars.map = map;
 	vars.height = height;
 	vars.width = width;
