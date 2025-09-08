@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 08:37:03 by diegfern          #+#    #+#             */
-/*   Updated: 2025/09/04 08:37:05 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/08 20:50:47 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,14 @@ void	assign_positions(t_stack **stack)
 ** Encuentra la posición objetivo en stack_a para un elemento de stack_b
 ** Determina dónde debe insertarse el elemento para mantener el orden
 */
-int	get_target_position(t_stack **stack_a, int index_b)
+static int	get_target_position(t_stack **stack_a, int index_b)
 {
 	t_stack	*temp_a;
 	int		target_pos;
 	int		target_index;
 
-	target_pos = 1;
+	/* target_pos = 1; */
+	target_pos = 0;			/* BUG FIX: posiciones empiezan en 0, no en 1 */
 	target_index = INT_MAX;
 	temp_a = *stack_a;
 	while (temp_a)

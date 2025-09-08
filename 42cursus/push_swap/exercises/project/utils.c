@@ -50,3 +50,14 @@ void	ft_putchar(char c)
 {
 	write(1, &c, 1);
 }
+
+/*
+** Verifica que la solución sea correcta
+** Retorna 1 si stack_a está ordenado y stack_b está vacío, 0 si no
+*/
+int	check_solution(t_stack *stack_a, t_stack *stack_b)
+{
+	if (stack_b != NULL)
+		return (0);
+	return (is_sorted(stack_a));
+}

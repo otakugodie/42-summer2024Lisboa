@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 23:41:23 by diegfern          #+#    #+#             */
-/*   Updated: 2025/09/04 08:33:25 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/06 07:39:23 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** Calcula el costo de mover un elemento a la posición objetivo en stack_a
 ** Considera si es más eficiente rotar hacia arriba o hacia abajo
 */
-int	calculate_cost_a(t_stack **stack_a, int target_pos)
+static int	calculate_cost_a(t_stack **stack_a, int target_pos)
 {
 	int	size;
 
@@ -31,7 +31,7 @@ int	calculate_cost_a(t_stack **stack_a, int target_pos)
 ** Calcula el costo de mover un elemento desde su posición actual en stack_b
 ** Considera si es más eficiente rotar hacia arriba o hacia abajo
 */
-int	calculate_cost_b(t_stack **stack_b, int pos)
+static int	calculate_cost_b(t_stack **stack_b, int pos)
 {
 	int	size;
 
@@ -62,53 +62,12 @@ void	get_cost(t_stack **stack_a, t_stack **stack_b)
 /*
 ** Encuentra y ejecuta el movimiento más barato
 ** Compara todos los costos y ejecuta el que requiere menos operaciones
+** apoyado en las funciones auxiliares para encontrar el elemento óptimo
 */
 void	do_cheapest_move(t_stack **stack_a, t_stack **stack_b)
 {
-	t_stack	*temp;
 	t_stack	*cheapest;
-	int		cheapest_cost;
-	int		cost_a;
-	int		cost_b;
 
-	temp = *stack_b;
-	cheapest_cost = INT_MAX;
-	while (temp)
-	{
-		if ((temp->cost_a < 0 && temp->cost_b < 0) || (temp->cost_a >= 0
-				&& temp->cost_b >= 0))
-		{
-			if (temp->cost_a < 0)
-				cost_a = -temp->cost_a;
-			else
-				cost_a = temp->cost_a;
-			if (temp->cost_b < 0)
-				cost_b = -temp->cost_b;
-			else
-				cost_b = temp->cost_b;
-			if (cost_a > cost_b)
-				cost_a = cost_a;
-			else
-				cost_a = cost_b;
-		}
-		else
-		{
-			if (temp->cost_a < 0)
-				cost_a = -temp->cost_a;
-			else
-				cost_a = temp->cost_a;
-			if (temp->cost_b < 0)
-				cost_b = -temp->cost_b;
-			else
-				cost_b = temp->cost_b;
-			cost_a = cost_a + cost_b;
-		}
-		if (cost_a < cheapest_cost)
-		{
-			cheapest_cost = cost_a;
-			cheapest = temp;
-		}
-		temp = temp->next;
-	}
+	cheapest = find_cheapest_element(*stack_b);
 	do_move(stack_a, stack_b, cheapest->cost_a, cheapest->cost_b);
 }
