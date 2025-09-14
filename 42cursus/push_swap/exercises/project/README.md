@@ -105,16 +105,6 @@ El algoritmo está optimizado para cumplir con los siguientes benchmarks:
 - **100 números**: ≤ 700 operaciones
 - **500 números**: ≤ 5500 operaciones
 
-## Norminette
-
-Todo el código cumple con los estándares de la Norminette de 42:
-
-- Funciones de máximo 25 líneas
-- Máximo 80 columnas por línea
-- Uso de tabulaciones para indentación
-- Gestión adecuada de memoria
-- Sin fugas de memoria
-
 ## Limpieza
 
 ```bash

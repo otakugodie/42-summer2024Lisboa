@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 08:37:03 by diegfern          #+#    #+#             */
-/*   Updated: 2025/09/08 20:50:47 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/14 17:02:34 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,7 @@ static int	get_target_position(t_stack **stack_a, int index_b)
 	int		target_pos;
 	int		target_index;
 
-	/* target_pos = 1; */
-	target_pos = 0;			/* BUG FIX: posiciones empiezan en 0, no en 1 */
+	target_pos = 0;
 	target_index = INT_MAX;
 	temp_a = *stack_a;
 	while (temp_a)

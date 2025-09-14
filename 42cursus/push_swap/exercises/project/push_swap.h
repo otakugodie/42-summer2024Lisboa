@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 08:35:26 by diegfern          #+#    #+#             */
-/*   Updated: 2025/09/06 08:47:42 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/14 17:02:44 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,8 @@ void				do_cheapest_move(t_stack **stack_a, t_stack **stack_b);
 /* Funciones de posicionamiento */
 int					get_lowest_index_position(t_stack **stack);
 void				assign_positions(t_stack **stack);
-//int					get_target_position(t_stack **stack_a, int index_b);
 
 /* Funciones de cálculo de costos */
-//int					calculate_cost_a(t_stack **stack_a, int target_pos);
-//int					calculate_cost_b(t_stack **stack_b, int pos);
 void				get_cost(t_stack **stack_a, t_stack **stack_b);
 
 /* Funciones auxiliares de costos */
@@ -91,12 +88,6 @@ t_stack				*find_cheapest_element(t_stack *stack_b);
 /* Funciones de ejecución de movimientos */
 void				do_move(t_stack **stack_a, t_stack **stack_b, int cost_a,
 						int cost_b);
-//void				do_rotate_both(t_stack **stack_a, t_stack **stack_b,
-//						int *cost_a, int *cost_b);
-//void				do_reverse_rotate_both(t_stack **stack_a, t_stack **stack_b,
-//						int *cost_a, int *cost_b);
-// void				do_rotate_a(t_stack **stack_a, int *cost_a);
-// void				do_rotate_b(t_stack **stack_b, int *cost_b);
 void				do_reverse_rotate_a(t_stack **stack_a, int *cost_a);
 void				do_reverse_rotate_b(t_stack **stack_b, int *cost_b);
 
@@ -111,12 +102,8 @@ void				ft_error(t_stack **stack_a, t_stack **stack_b);
 void				ft_putstr(char *str);
 void				ft_putchar(char c);
 
-
-
 /* Funciones de debug */
-void				debug_target_positions(t_stack *stack_a, t_stack *stack_b);
-void				ft_putnbr_fd(int n, int fd);	/* DEPURACIÓN: función auxiliar */
-
-
+//void				debug_target_positions(t_stack *stack_a, t_stack *stack_b);
+//void				ft_putnbr_fd(int n, int fd);	/* DEPURACIÓN*/
 
 #endif
