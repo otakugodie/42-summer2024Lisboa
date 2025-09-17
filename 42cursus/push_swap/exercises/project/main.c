@@ -6,37 +6,79 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 08:35:53 by diegfern          #+#    #+#             */
-/*   Updated: 2025/09/14 17:02:05 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/16 21:44:30 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
 /*
-** FUNCION ORIGINAL
-** Función principal que inicia el algoritmo push_swap
-** Valida la entrada, crea el stack y ejecuta el algoritmo de ordenación
+** Crea el stack desde argumentos separados (formato original)
+** Retorna el stack creado o NULL si hay error
 */
-int	main(int argc, char **argv)
+static t_stack	*create_stack_from_args(int argc, char **argv)
 {
 	t_stack	*stack_a;
-	t_stack	*stack_b;
-	int		stack_size;
 	int		i;
 
 	stack_a = NULL;
-	stack_b = NULL;
-	if (argc < 2)
-		return (0);
 	if (!is_valid_input(argc, argv))
-		ft_error(&stack_a, &stack_b);
+		return (NULL);
 	i = 1;
 	while (i < argc)
 	{
 		stack_add_back(&stack_a, new_stack((int)ft_atol(argv[i])));
 		i++;
 	}
-	if (has_duplicates(stack_a))
+	return (stack_a);
+}
+
+/*
+** Crea el stack desde una cadena con números separados por espacios
+** Retorna el stack creado o NULL si hay error
+*/
+static t_stack	*create_stack_from_string(char *str)
+{
+	t_stack	*stack_a;
+	char	**split_args;
+	int		i;
+
+	stack_a = NULL;
+	split_args = ft_split_args(str);
+	if (!split_args || !is_valid_split_input(split_args))
+	{
+		free_split_args(split_args);
+		return (NULL);
+	}
+	i = 0;
+	while (split_args[i])
+	{
+		stack_add_back(&stack_a, new_stack((int)ft_atol(split_args[i])));
+		i++;
+	}
+	free_split_args(split_args);
+	return (stack_a);
+}
+
+/*
+** Función principal que inicia el algoritmo push_swap
+** Maneja tanto argumentos separados como cadena única
+*/
+int	main(int argc, char **argv)
+{
+	t_stack	*stack_a;
+	t_stack	*stack_b;
+	int		stack_size;
+
+	stack_a = NULL;
+	stack_b = NULL;
+	if (argc < 2)
+		return (0);
+	if (argc == 2)
+		stack_a = create_stack_from_string(argv[1]);
+	else
+		stack_a = create_stack_from_args(argc, argv);
+	if (!stack_a || has_duplicates(stack_a))
 		ft_error(&stack_a, &stack_b);
 	stack_size = get_stack_size(stack_a);
 	assign_index(stack_a, stack_size);

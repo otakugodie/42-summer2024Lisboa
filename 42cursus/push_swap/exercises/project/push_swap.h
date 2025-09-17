@@ -6,7 +6,7 @@
 /*   By: diegfern <diegfern@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 08:35:26 by diegfern          #+#    #+#             */
-/*   Updated: 2025/09/14 17:02:44 by diegfern         ###   ########.fr       */
+/*   Updated: 2025/09/16 21:55:03 by diegfern         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ int					is_valid_input(int argc, char **argv);
 int					is_number(char *str);
 int					has_duplicates(t_stack *stack);
 long				ft_atol(const char *str);
+char				**ft_split_args(const char *str);
+char				**free_split_result(char **result, int count);
+int					is_valid_split_input(char **split_args);
+void				free_split_args(char **split_args);
 
 /* Funciones de stack */
 t_stack				*new_stack(int value);
